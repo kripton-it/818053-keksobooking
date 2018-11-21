@@ -25,6 +25,11 @@ var TYPE_ARRAY = [
 ];
 var MIN_NUMBER_OF_ROOMS = 1;
 var MAX_NUMBER_OF_ROOMS = 5;
+var CHECK_TIMES_ARRAY = [
+  '12:00',
+  '13:00',
+  '14:00'
+];
 
 
 function getRandomInteger(min, max) {
@@ -53,7 +58,7 @@ function generateAvatarSrc (avatar) {
   return avatarSrc;
 }
 
-function generateObject(avatar, title, type) {
+function generateObject(avatar, title, type, checkin, checkout) {
   var object = {
     'author': {
       'avatar': generateAvatarSrc(avatar)
@@ -62,7 +67,9 @@ function generateObject(avatar, title, type) {
       'title': title,
       'price': getRandomInteger(MIN_PRICE, MAX_PRICE),
       'type': type,
-      'rooms': getRandomInteger(MIN_NUMBER_OF_ROOMS, MAX_NUMBER_OF_ROOMS)
+      'rooms': getRandomInteger(MIN_NUMBER_OF_ROOMS, MAX_NUMBER_OF_ROOMS),
+      'checkin': checkin,
+      'checkout': checkout
     }
   };
   return object;
@@ -76,7 +83,9 @@ function generateData(amount) {
     var avatar = numberArray[i];
     var title = titleArray[i];
     var type = TYPE_ARRAY[getRandomInteger(0, TYPE_ARRAY.length - 1)];
-    array[i] = generateObject(avatar, title, type);
+    var checkin = CHECK_TIMES_ARRAY[getRandomInteger(0, CHECK_TIMES_ARRAY.length - 1)];
+    var checkout = CHECK_TIMES_ARRAY[getRandomInteger(0, CHECK_TIMES_ARRAY.length - 1)];
+    array[i] = generateObject(avatar, title, type, checkin, checkout);
   }
   return array;
 }
@@ -84,7 +93,7 @@ function generateData(amount) {
 var data = generateData(NUMBER_OF_OBJECTS);
 
 for (var i = 0; i < data.length; i++) {
-  alert(i + ': ' + data[i].offer.rooms);
+  alert(i + ': ' + data[i].offer.checkin);
 }
 
 
