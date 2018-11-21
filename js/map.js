@@ -1,10 +1,7 @@
 'use strict';
 
 var NUMBER_OF_OBJECTS = 8;
-var ORIGINAL_NUMBER_ARRAY = [];
-for (var i = 0; i < NUMBER_OF_OBJECTS; i++) {
-  ORIGINAL_NUMBER_ARRAY[i] = i + 1;
-}
+var ORIGINAL_NUMBER_ARRAY = [1, 2, 3, 4, 5, 6, 7, 8];
 var ORIGINAL_TITLE_ARRAY = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
@@ -52,11 +49,11 @@ var Y_MAX = 630;
 
 
 function getRandomInteger(min, max) {
-  var rand = min - 0.5 + Math.random() * (max - min + 1)
-  return  Math.round(rand);
+  var rand = min - 0.5 + Math.random() * (max - min + 1);
+  return Math.round(rand);
 }
 
-function getMixedArray (array) {
+function getMixedArray(array) {
   var originalArray = array.slice(0);
   var mixedArray = [];
   for (var i = 0; i < array.length; i++) {
@@ -67,17 +64,17 @@ function getMixedArray (array) {
   return mixedArray;
 }
 
-function getRandomLengthArray (array) {
+function getRandomLengthArray(array) {
   var randomLength = getRandomInteger(1, array.length);
   var newArray = array.slice(0, randomLength);
   return newArray;
 }
 
-function getRandomLengthMixedArray (array) {
+function getRandomLengthMixedArray(array) {
   return getRandomLengthArray(getMixedArray(array));
 }
 
-function generateAvatarSrc (avatar) {
+function generateAvatarSrc(avatar) {
   var avatarSrc = 'img/avatars/user0' + avatar + '.png';
   return avatarSrc;
 }
@@ -112,11 +109,11 @@ function generateObject(avatar, title, type, checkin, checkout, x, y) {
   return object;
 }
 
-function generateData(amount) {
+function generateData() {
   var array = [];
   var numberArray = getMixedArray(ORIGINAL_NUMBER_ARRAY);
   var titleArray = getMixedArray(ORIGINAL_TITLE_ARRAY);
-  for (var i = 0; i < amount; i++) {
+  for (var i = 0; i < NUMBER_OF_OBJECTS; i++) {
     var avatar = numberArray[i];
     var title = titleArray[i];
     var type = TYPE_ARRAY[getRandomInteger(0, TYPE_ARRAY.length - 1)];
@@ -129,10 +126,8 @@ function generateData(amount) {
   return array;
 }
 
-var data = generateData(NUMBER_OF_OBJECTS);
+generateData();
 
-for (var i = 0; i < data.length; i++) {
-  alert(i + ': ' + data[i].offer.address);
-}
+// var data = generateData();
 
 
