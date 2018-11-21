@@ -40,6 +40,11 @@ var FEATURES_ARRAY = [
   'elevator',
   'conditioner'
 ];
+var PHOTOS_ARRAY = [
+  'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
+];
 
 
 function getRandomInteger(min, max) {
@@ -91,7 +96,8 @@ function generateObject(avatar, title, type, checkin, checkout) {
       'checkin': checkin,
       'checkout': checkout,
       'description': '',
-      'features': generateFeatures()
+      'features': generateFeatures(),
+      'photos': getMixedArray(PHOTOS_ARRAY)
     }
   };
   return object;
@@ -115,7 +121,7 @@ function generateData(amount) {
 var data = generateData(NUMBER_OF_OBJECTS);
 
 for (var i = 0; i < data.length; i++) {
-  alert(i + ': ' + data[i].offer.features);
+  alert(i + ': ' + data[i].offer.photos);
 }
 
 
