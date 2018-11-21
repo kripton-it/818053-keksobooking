@@ -5,7 +5,16 @@ var ORIGINAL_NUMBER_ARRAY = [];
 for (var i = 0; i < NUMBER_OF_OBJECTS; i++) {
   ORIGINAL_NUMBER_ARRAY[i] = i + 1;
 }
-
+var ORIGINAL_TITLE_ARRAY = [
+  'Большая уютная квартира',
+  'Маленькая неуютная квартира',
+  'Огромный прекрасный дворец',
+  'Маленький ужасный дворец',
+  'Красивый гостевой домик',
+  'Некрасивый негостеприимный домик',
+  'Уютное бунгало далеко от моря',
+  'Неуютное бунгало по колено в воде'
+];
 
 
 function getRandomInteger(min, max) {
@@ -34,10 +43,13 @@ function generateAvatarSrc (avatar) {
   return avatarSrc;
 }
 
-function generateObject(avatar) {
+function generateObject(avatar, title) {
   var object = {
     'author': {
       'avatar': generateAvatarSrc(avatar)
+    },
+    'offer': {
+      'title': title
     }
   };
   return object;
@@ -46,9 +58,11 @@ function generateObject(avatar) {
 function generateData(amount) {
   var array = [];
   var numberArray = getMixedArray(ORIGINAL_NUMBER_ARRAY);
+  var titleArray = getMixedArray(ORIGINAL_TITLE_ARRAY);
   for (var i = 0; i < amount; i++) {
     var avatar = numberArray[i];
-    array[i] = generateObject(avatar);
+    var title = titleArray[i];
+    array[i] = generateObject(avatar, title);
     //alert(array[i].author.avatar);
   }
   return array;
@@ -57,7 +71,7 @@ function generateData(amount) {
 var data = generateData(NUMBER_OF_OBJECTS);
 
 for (var i = 0; i < data.length; i++) {
-  alert(i + ': ' + data[i].author.avatar);
+  alert(i + ': ' + data[i].offer.title);
 }
 
 
