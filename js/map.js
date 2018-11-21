@@ -15,6 +15,8 @@ var ORIGINAL_TITLE_ARRAY = [
   'Уютное бунгало далеко от моря',
   'Неуютное бунгало по колено в воде'
 ];
+var MIN_PRICE = 1000;
+var MAX_PRICE = 1000000;
 
 
 function getRandomInteger(min, max) {
@@ -49,7 +51,8 @@ function generateObject(avatar, title) {
       'avatar': generateAvatarSrc(avatar)
     },
     'offer': {
-      'title': title
+      'title': title,
+      'price': getRandomInteger(MIN_PRICE, MAX_PRICE)
     }
   };
   return object;
@@ -71,7 +74,7 @@ function generateData(amount) {
 var data = generateData(NUMBER_OF_OBJECTS);
 
 for (var i = 0; i < data.length; i++) {
-  alert(i + ': ' + data[i].offer.title);
+  alert(i + ': ' + data[i].offer.price);
 }
 
 
