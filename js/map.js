@@ -23,6 +23,8 @@ var TYPE_ARRAY = [
   'house',
   'bungalo'
 ];
+var MIN_NUMBER_OF_ROOMS = 1;
+var MAX_NUMBER_OF_ROOMS = 5;
 
 
 function getRandomInteger(min, max) {
@@ -59,7 +61,8 @@ function generateObject(avatar, title, type) {
     'offer': {
       'title': title,
       'price': getRandomInteger(MIN_PRICE, MAX_PRICE),
-      'type': type
+      'type': type,
+      'rooms': getRandomInteger(MIN_NUMBER_OF_ROOMS, MAX_NUMBER_OF_ROOMS)
     }
   };
   return object;
@@ -81,7 +84,7 @@ function generateData(amount) {
 var data = generateData(NUMBER_OF_OBJECTS);
 
 for (var i = 0; i < data.length; i++) {
-  alert(i + ': ' + data[i].offer.type);
+  alert(i + ': ' + data[i].offer.rooms);
 }
 
 
