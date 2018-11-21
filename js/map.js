@@ -45,6 +45,10 @@ var PHOTOS_ARRAY = [
   'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
+var X_MIN = 0;
+var X_MAX = 1200;
+var Y_MIN = 130;
+var Y_MAX = 630;
 
 
 function getRandomInteger(min, max) {
@@ -82,13 +86,14 @@ function generateFeatures() {
   return getRandomLengthMixedArray(FEATURES_ARRAY);
 }
 
-function generateObject(avatar, title, type, checkin, checkout) {
+function generateObject(avatar, title, type, checkin, checkout, x, y) {
   var object = {
     'author': {
       'avatar': generateAvatarSrc(avatar)
     },
     'offer': {
       'title': title,
+      'address': x + ', ' + y,
       'price': getRandomInteger(MIN_PRICE, MAX_PRICE),
       'type': type,
       'rooms': getRandomInteger(MIN_NUMBER_OF_ROOMS, MAX_NUMBER_OF_ROOMS),
@@ -98,6 +103,10 @@ function generateObject(avatar, title, type, checkin, checkout) {
       'description': '',
       'features': generateFeatures(),
       'photos': getMixedArray(PHOTOS_ARRAY)
+    },
+    'location': {
+      x: x,
+      y: y
     }
   };
   return object;
@@ -113,7 +122,9 @@ function generateData(amount) {
     var type = TYPE_ARRAY[getRandomInteger(0, TYPE_ARRAY.length - 1)];
     var checkin = CHECK_TIMES_ARRAY[getRandomInteger(0, CHECK_TIMES_ARRAY.length - 1)];
     var checkout = CHECK_TIMES_ARRAY[getRandomInteger(0, CHECK_TIMES_ARRAY.length - 1)];
-    array[i] = generateObject(avatar, title, type, checkin, checkout);
+    var locationX = getRandomInteger(X_MIN, X_MAX);
+    var locationY = getRandomInteger(Y_MIN, Y_MAX);
+    array[i] = generateObject(avatar, title, type, checkin, checkout, locationX, locationY);
   }
   return array;
 }
@@ -121,7 +132,7 @@ function generateData(amount) {
 var data = generateData(NUMBER_OF_OBJECTS);
 
 for (var i = 0; i < data.length; i++) {
-  alert(i + ': ' + data[i].offer.photos);
+  alert(i + ': ' + data[i].offer.address);
 }
 
 
