@@ -25,6 +25,8 @@ var TYPE_ARRAY = [
 ];
 var MIN_NUMBER_OF_ROOMS = 1;
 var MAX_NUMBER_OF_ROOMS = 5;
+var MIN_NUMBER_OF_GUESTS = 1;
+var MAX_NUMBER_OF_GUESTS = 3;
 var CHECK_TIMES_ARRAY = [
   '12:00',
   '13:00',
@@ -68,6 +70,7 @@ function generateObject(avatar, title, type, checkin, checkout) {
       'price': getRandomInteger(MIN_PRICE, MAX_PRICE),
       'type': type,
       'rooms': getRandomInteger(MIN_NUMBER_OF_ROOMS, MAX_NUMBER_OF_ROOMS),
+      'guests': getRandomInteger(MIN_NUMBER_OF_GUESTS, MAX_NUMBER_OF_GUESTS),
       'checkin': checkin,
       'checkout': checkout
     }
@@ -93,7 +96,7 @@ function generateData(amount) {
 var data = generateData(NUMBER_OF_OBJECTS);
 
 for (var i = 0; i < data.length; i++) {
-  alert(i + ': ' + data[i].offer.checkin);
+  alert(i + ': ' + data[i].offer.guests);
 }
 
 
