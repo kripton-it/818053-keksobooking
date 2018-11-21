@@ -17,6 +17,12 @@ var ORIGINAL_TITLE_ARRAY = [
 ];
 var MIN_PRICE = 1000;
 var MAX_PRICE = 1000000;
+var TYPE_ARRAY = [
+  'palace',
+  'flat',
+  'house',
+  'bungalo'
+];
 
 
 function getRandomInteger(min, max) {
@@ -45,14 +51,15 @@ function generateAvatarSrc (avatar) {
   return avatarSrc;
 }
 
-function generateObject(avatar, title) {
+function generateObject(avatar, title, type) {
   var object = {
     'author': {
       'avatar': generateAvatarSrc(avatar)
     },
     'offer': {
       'title': title,
-      'price': getRandomInteger(MIN_PRICE, MAX_PRICE)
+      'price': getRandomInteger(MIN_PRICE, MAX_PRICE),
+      'type': type
     }
   };
   return object;
@@ -65,8 +72,8 @@ function generateData(amount) {
   for (var i = 0; i < amount; i++) {
     var avatar = numberArray[i];
     var title = titleArray[i];
-    array[i] = generateObject(avatar, title);
-    //alert(array[i].author.avatar);
+    var type = TYPE_ARRAY[getRandomInteger(0, TYPE_ARRAY.length - 1)];
+    array[i] = generateObject(avatar, title, type);
   }
   return array;
 }
@@ -74,7 +81,7 @@ function generateData(amount) {
 var data = generateData(NUMBER_OF_OBJECTS);
 
 for (var i = 0; i < data.length; i++) {
-  alert(i + ': ' + data[i].offer.price);
+  alert(i + ': ' + data[i].offer.type);
 }
 
 
