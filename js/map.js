@@ -1,8 +1,8 @@
 'use strict';
 
 var NUMBER_OF_OBJECTS = 8;
-var ORIGINAL_NUMBER_ARRAY = [1, 2, 3, 4, 5, 6, 7, 8];
-var ORIGINAL_TITLE_ARRAY = [
+var NUMBERS = getMixedArray([1, 2, 3, 4, 5, 6, 7, 8]);
+var TITLES = getMixedArray([
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
   'Огромный прекрасный дворец',
@@ -11,10 +11,10 @@ var ORIGINAL_TITLE_ARRAY = [
   'Некрасивый негостеприимный домик',
   'Уютное бунгало далеко от моря',
   'Неуютное бунгало по колено в воде'
-];
+]);
 var MIN_PRICE = 1000;
 var MAX_PRICE = 1000000;
-var TYPE_ARRAY = [
+var TYPES = [
   'palace',
   'flat',
   'house',
@@ -24,12 +24,12 @@ var MIN_NUMBER_OF_ROOMS = 1;
 var MAX_NUMBER_OF_ROOMS = 5;
 var MIN_NUMBER_OF_GUESTS = 1;
 var MAX_NUMBER_OF_GUESTS = 3;
-var CHECK_TIMES_ARRAY = [
+var CHECK_TIMES = [
   '12:00',
   '13:00',
   '14:00'
 ];
-var FEATURES_ARRAY = [
+var FEATURES = [
   'wifi',
   'dishwasher',
   'parking',
@@ -37,7 +37,7 @@ var FEATURES_ARRAY = [
   'elevator',
   'conditioner'
 ];
-var PHOTOS_ARRAY = [
+var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
@@ -66,44 +66,34 @@ function getMixedArray(array) {
 
 function getRandomLengthArray(array) {
   var randomLength = getRandomInteger(1, array.length);
-  var newArray = array.slice(0, randomLength);
-  return newArray;
+  return array.slice(0, randomLength);
 }
 
 function getRandomLengthMixedArray(array) {
   return getRandomLengthArray(getMixedArray(array));
 }
 
-function generateAvatarSrc(avatar) {
-  var avatarSrc = 'img/avatars/user0' + avatar + '.png';
-  return avatarSrc;
-}
-
-function generateFeatures() {
-  return getRandomLengthMixedArray(FEATURES_ARRAY);
-}
-
-function generateObject(avatar, title, type, checkin, checkout, x, y) {
+function generateObject(i) {
   var object = {
     'author': {
-      'avatar': generateAvatarSrc(avatar)
+      'avatar': 'img/avatars/user0' + NUMBERS[i] + '.png'
     },
     'offer': {
-      'title': title,
-      'address': x + ', ' + y,
+      'title': TITLES[i],
+      'address': getRandomInteger(X_MIN, X_MAX) + ', ' + getRandomInteger(Y_MIN, Y_MAX),
       'price': getRandomInteger(MIN_PRICE, MAX_PRICE),
-      'type': type,
+      'type': TYPES[getRandomInteger(0, TYPES.length - 1)],
       'rooms': getRandomInteger(MIN_NUMBER_OF_ROOMS, MAX_NUMBER_OF_ROOMS),
       'guests': getRandomInteger(MIN_NUMBER_OF_GUESTS, MAX_NUMBER_OF_GUESTS),
-      'checkin': checkin,
-      'checkout': checkout,
+      'checkin': CHECK_TIMES[getRandomInteger(0, CHECK_TIMES.length - 1)],
+      'checkout': CHECK_TIMES[getRandomInteger(0, CHECK_TIMES.length - 1)],
       'description': '',
-      'features': generateFeatures(),
-      'photos': getMixedArray(PHOTOS_ARRAY)
+      'features': getRandomLengthMixedArray(FEATURES),
+      'photos': getMixedArray(PHOTOS)
     },
     'location': {
-      x: x,
-      y: y
+      x: getRandomInteger(X_MIN, X_MAX),
+      y: getRandomInteger(Y_MIN, Y_MAX)
     }
   };
   return object;
@@ -111,23 +101,15 @@ function generateObject(avatar, title, type, checkin, checkout, x, y) {
 
 function generateData() {
   var array = [];
-  var numberArray = getMixedArray(ORIGINAL_NUMBER_ARRAY);
-  var titleArray = getMixedArray(ORIGINAL_TITLE_ARRAY);
+
   for (var i = 0; i < NUMBER_OF_OBJECTS; i++) {
-    var avatar = numberArray[i];
-    var title = titleArray[i];
-    var type = TYPE_ARRAY[getRandomInteger(0, TYPE_ARRAY.length - 1)];
-    var checkin = CHECK_TIMES_ARRAY[getRandomInteger(0, CHECK_TIMES_ARRAY.length - 1)];
-    var checkout = CHECK_TIMES_ARRAY[getRandomInteger(0, CHECK_TIMES_ARRAY.length - 1)];
-    var locationX = getRandomInteger(X_MIN, X_MAX);
-    var locationY = getRandomInteger(Y_MIN, Y_MAX);
-    array[i] = generateObject(avatar, title, type, checkin, checkout, locationX, locationY);
+    array[i] = generateObject(i);
   }
   return array;
 }
 
-generateData();
+var data = generateData();
 
-// var data = generateData();
+console.log(data);
 
 
