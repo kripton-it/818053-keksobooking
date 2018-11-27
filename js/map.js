@@ -1,5 +1,7 @@
 'use strict';
 
+// #13 Личный проект: пока все дома
+
 var NUMBER_OF_OBJECTS = 8;
 var NUMBERS = getMixedArray([1, 2, 3, 4, 5, 6, 7, 8]);
 var TITLES = getMixedArray([
@@ -229,8 +231,45 @@ function renderCard(card) {
 }
 
 var data = generateData();
-map.classList.remove('map--faded');
-renderPins(data);
+//map.classList.remove('map--faded');
+//renderPins(data);
 var card = createCard(data[0]);
-renderCard(card);
+//renderCard(card);
 
+// #16 Личный проект: подробности
+
+var mainPin = map.querySelector('.map__pin--main');
+var adForm = document.querySelector('.ad-form');
+var filtersForm = document.querySelector('.map__filters');
+var addressInput = adForm.querySelector('#address');
+addressInput.value = (parseInt(mainPin.style.left, 10) + mainPin.offsetWidth / 2) + ', ' + (parseInt(mainPin.style.top, 10) + mainPin.offsetHeight / 2);
+
+function toggleMapState() {
+  map.classList.toggle('map--faded');
+}
+
+function toggleFormState(form) {
+  var formInputs = form.querySelectorAll('input');
+  var formSelects = form.querySelectorAll('select');
+  var disabledClass = form.classList[0] + '--disabled';
+  form.classList.toggle(disabledClass);
+  for (var i = 0; i < formInputs.length; i++) {
+    formInputs[i].disabled = !formInputs[i].disabled;
+  }
+  for (var i = 0; i < formSelects.length; i++) {
+    formSelects[i].disabled = !formSelects[i].disabled;
+  }
+}
+
+function mainPinMouseupHandler() {
+  toggleMapState();
+  toggleFormState(adForm);
+  toggleFormState(filtersForm);
+  changeAddressValue();
+}
+
+function changeAddressValue() {
+  addressInput.value = (parseInt(mainPin.style.left, 10) + mainPin.offsetWidth / 2) + ', ' + (parseInt(mainPin.style.top, 10) + mainPin.offsetHeight);
+}
+
+mainPin.addEventListener('mouseup', mainPinMouseupHandler);
