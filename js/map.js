@@ -242,16 +242,24 @@ var mainPin = map.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
 var filtersForm = document.querySelector('.map__filters');
 var addressInput = adForm.querySelector('#address');
-addressInput.value = (parseInt(mainPin.style.left, 10) + mainPin.offsetWidth / 2) + ', ' + (parseInt(mainPin.style.top, 10) + mainPin.offsetHeight / 2);
+var mainPinCenterCoords = {
+  x: parseInt(mainPin.style.left, 10) + mainPin.offsetWidth / 2,
+  y: parseInt(mainPin.style.top, 10) + mainPin.offsetHeight / 2
+};
+addressInput.value = setAddress(mainPinCenterCoords);
 
 function toggleMapState() {
   map.classList.toggle('map--faded');
 }
 
+function setAddress(coords) {
+  return coords.x + ', ' + coords.y;
+}
+
 function toggleFormState(form) {
   var formInputs = form.querySelectorAll('input');
   var formSelects = form.querySelectorAll('select');
-  var disabledClass = form.classList[0] + '--disabled';
+  var disabledClass = form.name + '--disabled';
   form.classList.toggle(disabledClass);
   for (var i = 0; i < formInputs.length; i++) {
     formInputs[i].disabled = !formInputs[i].disabled;
@@ -269,7 +277,11 @@ function mainPinMouseupHandler() {
 }
 
 function changeAddressValue() {
-  addressInput.value = (parseInt(mainPin.style.left, 10) + mainPin.offsetWidth / 2) + ', ' + (parseInt(mainPin.style.top, 10) + mainPin.offsetHeight);
+  var mainPinCoords = {
+    x: parseInt(mainPin.style.left, 10) + mainPin.offsetWidth / 2,
+    y: parseInt(mainPin.style.top, 10) + mainPin.offsetHeight
+  };
+  addressInput.value = setAddress(mainPinCoords);
 }
 
 mainPin.addEventListener('mouseup', mainPinMouseupHandler);
