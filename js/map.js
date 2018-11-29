@@ -47,6 +47,7 @@ var Y_MIN = 130;
 var Y_MAX = 630;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
+var MAIN_PIN_HEIGHT = 22;
 var CARD_PHOTO_WIDTH = 45;
 var CARD_PHOTO_HEIGTH = 40;
 var map = document.querySelector('.map');
@@ -280,7 +281,7 @@ function mainPinMouseupHandler() {
 function changeAddressValue() {
   var mainPinCoords = {
     x: parseInt(mainPin.style.left, 10) + mainPin.offsetWidth / 2,
-    y: parseInt(mainPin.style.top, 10) + mainPin.offsetHeight
+    y: parseInt(mainPin.style.top, 10) + mainPin.offsetHeight + MAIN_PIN_HEIGHT
   };
   addressInput.value = setAddress(mainPinCoords);
 }
