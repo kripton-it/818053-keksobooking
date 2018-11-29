@@ -152,6 +152,9 @@ function createPin(example) {
   var pinImage = pin.querySelector('img');
   pinImage.src = example.author.avatar;
   pinImage.alt = example.offer.title;
+  pin.addEventListener('click', function () {
+    showPopup(example);
+  });
   return pin;
 }
 
@@ -162,6 +165,7 @@ function renderPins(data) {
     fragment.appendChild(newPin);
   }
   pinsContainer.appendChild(fragment);
+  mainPin.removeEventListener('mouseup', mainPinMouseupHandler);
 }
 
 function createFeature(item) {
@@ -265,43 +269,12 @@ function toggleFormState(form) {
   }
 }
 
-function createPinListeners() {
-  var pins = pinsContainer.querySelectorAll('.map__pin:not(.map__pin--main)');
-  for (var i = 0; i < pins.length; i++) {
-    var pin = pins[i];
-    pin.addEventListener('click', pinClickHandler);
-  }
-}
-
-function pinClickHandler() {
-  var pins = pinsContainer.querySelectorAll('.map__pin:not(.map__pin--main)');
-  var j;
-  for (var i = 0; i < pins.length; i++) {
-    if (pins[i] === this) {
-      j = i;
-    }
-  }
-  var oldCard = map.querySelector('.map__card');
-  if (oldCard) {
-    map.removeChild(oldCard);
-  }
-  var infoCard = createCard(data[j]);
-  renderCard(infoCard);
-  var popupClose = map.querySelector('.popup__close');
-  popupClose.addEventListener('click', popupCloseClickHandler);
-}
-
-function popupCloseClickHandler() {
-  this.parentNode.style.display = 'none';
-}
-
 function mainPinMouseupHandler() {
   toggleMapState();
   toggleFormState(adForm);
   toggleFormState(filtersForm);
   changeAddressValue();
   renderPins(data);
-  createPinListeners();
 }
 
 function changeAddressValue() {
@@ -310,6 +283,19 @@ function changeAddressValue() {
     y: parseInt(mainPin.style.top, 10) + mainPin.offsetHeight
   };
   addressInput.value = setAddress(mainPinCoords);
+}
+
+function showPopup(example) {
+  var oldCard = map.querySelector('.map__card');
+  if (oldCard) {
+    oldCard.remove();
+  }
+  var infoCard = createCard(example);
+  renderCard(infoCard);
+  var popupClose = infoCard.querySelector('.popup__close');
+  popupClose.addEventListener('click', function() {
+    infoCard.remove();
+  });
 }
 
 mainPin.addEventListener('mouseup', mainPinMouseupHandler);
