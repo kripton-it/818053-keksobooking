@@ -16,12 +16,12 @@ var TITLES = getMixedArray([
 ]);
 var MIN_PRICE = 1000;
 var MAX_PRICE = 1000000;
-var TYPES = [
+/*var TYPES = [
   'palace',
   'flat',
   'house',
   'bungalo'
-];
+];*/
 var MIN_NUMBER_OF_ROOMS = 1;
 var MAX_NUMBER_OF_ROOMS = 5;
 var MIN_NUMBER_OF_GUESTS = 1;
@@ -50,6 +50,12 @@ var PIN_HEIGHT = 70;
 var MAIN_PIN_HEIGHT = 22;
 var CARD_PHOTO_WIDTH = 45;
 var CARD_PHOTO_HEIGTH = 40;
+var types = {
+  palace: 'Дворец',
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalo: 'Бунгало'
+};
 var map = document.querySelector('.map');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
@@ -80,25 +86,6 @@ function getRandomLengthMixedArray(array) {
   return getRandomLengthArray(getMixedArray(array));
 }
 
-function getCardType(string) {
-  var translatedString = 'Нечто';
-  switch (string) {
-    case 'flat':
-      translatedString = 'Квартира';
-      break;
-    case 'bungalo':
-      translatedString = 'Бунгало';
-      break;
-    case 'house':
-      translatedString = 'Дом';
-      break;
-    case 'palace':
-      translatedString = 'Дворец';
-      break;
-  }
-  return translatedString;
-}
-
 function getCardCapacityRooms(rooms) {
   var cardCapacityRooms = ' комнаты для ';
   if (rooms === 1) {
@@ -123,7 +110,7 @@ function generateObject(index) {
       title: TITLES[index],
       address: location.x + ', ' + location.y,
       price: getRandomInteger(MIN_PRICE, MAX_PRICE),
-      type: TYPES[getRandomInteger(0, TYPES.length - 1)],
+      type: Object.keys(types)[getRandomInteger(0, Object.keys(types).length - 1)],
       rooms: getRandomInteger(MIN_NUMBER_OF_ROOMS, MAX_NUMBER_OF_ROOMS),
       guests: getRandomInteger(MIN_NUMBER_OF_GUESTS, MAX_NUMBER_OF_GUESTS),
       checkin: getRandomInteger(MIN_CHECK_HOUR, MAX_CHECK_HOUR) + ':00',
@@ -223,7 +210,7 @@ function createCard(infoCard, callback) {
   cardTitle.textContent = infoCard.offer.title;
   cardAddress.textContent = infoCard.offer.address;
   cardPrice.innerHTML = infoCard.offer.price + '&#x20bd;<span>/ночь</span>';
-  cardType.textContent = getCardType(infoCard.offer.type);
+  cardType.textContent = types[infoCard.offer.type];
   cardCapacity.textContent = infoCard.offer.rooms + getCardCapacityRooms(infoCard.offer.rooms) + infoCard.offer.guests + (infoCard.offer.guests === 1 ? ' гостя' : ' гостей');
   cardTime.textContent = 'Заезд после ' + infoCard.offer.checkin + ', выезд до ' + infoCard.offer.checkout;
   cardFeatures.innerHTML = '';
