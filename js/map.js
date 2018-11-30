@@ -310,15 +310,13 @@ setAddress(mainPinCenterCoords);
 
 // #17 Личный проект: доверяй, но проверяй
 
-toggleFormInputState(adFormElement);
-toggleFormInputState(filtersFormElement);
-
 var typeElement = adFormElement.querySelector('#type');
 var priceElement = adFormElement.querySelector('#price');
 var timeInElement = adFormElement.querySelector('#timein');
 var timeOutElement = adFormElement.querySelector('#timeout');
 var roomsNumberElement = adFormElement.querySelector('#room_number');
 var capacityElement = adFormElement.querySelector('#capacity');
+var adFormSubmitElement = adFormElement.querySelector('.ad-form__submit');
 
 function typeSelectChangeHandler() {
   setPriceParameters();
@@ -331,76 +329,45 @@ function setPriceParameters() {
   priceElement.min = minPrice;
 }
 
+function checkRoomsAndCapacity() {
+  var roomsOptionValueLastDigit = +roomsNumberElement.value % 100;
+  var capacityOptionValue = +capacityElement.value;
+  var isValid = false;
+  if (roomsOptionValueLastDigit < 2 && roomsOptionValueLastDigit !== capacityOptionValue) {
+    capacityElement.setCustomValidity('Введите допустимое количество гостей');
+  } else if (roomsOptionValueLastDigit >= 2 && (roomsOptionValueLastDigit < capacityOptionValue || capacityOptionValue === 0)) {
+    capacityElement.setCustomValidity('Введите допустимое количество гостей');
+  } else {
+    capacityElement.setCustomValidity('');
+    isValid = true;
+  }
+  return isValid;
+}
+
+toggleFormInputState(adFormElement);
+toggleFormInputState(filtersFormElement);
+setPriceParameters();
+
 typeElement.addEventListener('change', typeSelectChangeHandler);
 
-timeInElement.addEventListener('change', function() {
+timeInElement.addEventListener('change', function () {
   timeOutElement.value = timeInElement.value;
 });
 
-timeOutElement.addEventListener('change', function() {
+timeOutElement.addEventListener('change', function () {
   timeInElement.value = timeOutElement.value;
 });
 
-function setGuestsParameters() {
-  var options = capacityElement.querySelectorAll('option');
-  switch (roomsNumberElement.value) {
-    case '1':
-      for (var i = 0; i < options.length; i++) {
-        options[i].disabled = true;
-        if (options[i].value === '1') {
-          options[i].disabled = false;
-          options[i].selected = true;
-        }
-      }
-      break;
-    case '2':
-      for (var i = 0; i < options.length; i++) {
-        options[i].disabled = true;
-        if (options[i].value === '1') {
-          options[i].disabled = false;
-        }
-        if (options[i].value === '2') {
-          options[i].disabled = false;
-          options[i].selected = true;
-        }
-      }
-      break;
-    case '3':
-      for (var i = 0; i < options.length; i++) {
-        options[i].disabled = true;
-        if (options[i].value === '1') {
-          options[i].disabled = false;
-        }
-        if (options[i].value === '2') {
-          options[i].disabled = false;
-        }
-        if (options[i].value === '3') {
-          options[i].disabled = false;
-          options[i].selected = true;
-        }
-      }
-      break;
-    case '100':
-      for (var i = 0; i < options.length; i++) {
-        options[i].disabled = true;
-        if (options[i].value === '0') {
-          options[i].disabled = false;
-          options[i].selected = true;
-        }
-      }
-      break;
-  }
-}
-
-roomsNumberElement.addEventListener('change', function() {
-  setGuestsParameters();
+roomsNumberElement.addEventListener('change', function () {
+  checkRoomsAndCapacity();
 });
 
-setPriceParameters();
-setGuestsParameters();
+capacityElement.addEventListener('change', function () {
+  checkRoomsAndCapacity();
+});
 
-adFormElement.addEventListener('invalid', function (evt) {
-  var target = evt.target;
-  target.style.border = '5px solid red';
-  target.style.boxShadow = 'none';
-}, true);
+adFormSubmitElement.addEventListener('click', function (evt) {
+  if (checkRoomsAndCapacity()) {
+    evt.preventDefault();
+  }
+});
