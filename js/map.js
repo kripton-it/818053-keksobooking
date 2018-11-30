@@ -45,10 +45,22 @@ var MAIN_PIN_HEIGHT = 22;
 var CARD_PHOTO_WIDTH = 45;
 var CARD_PHOTO_HEIGTH = 40;
 var types = {
-  palace: 'Дворец',
-  flat: 'Квартира',
-  house: 'Дом',
-  bungalo: 'Бунгало'
+  palace: {
+    translation: 'Дворец',
+    minprice: 10000
+  },
+  flat: {
+    translation: 'Квартира',
+    minprice: 1000
+  },
+  house: {
+    translation: 'Дом',
+    minprice: 5000
+  },
+  bungalo: {
+    translation: 'Бунгало',
+    minprice: 0
+  }
 };
 var mapElement = document.querySelector('.map');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -204,7 +216,7 @@ function createCard(infoCard, callback) {
   titleElement.textContent = infoCard.offer.title;
   addressElement.textContent = infoCard.offer.address;
   priceElement.innerHTML = infoCard.offer.price + '&#x20bd;<span>/ночь</span>';
-  typeElement.textContent = types[infoCard.offer.type];
+  typeElement.textContent = types[infoCard.offer.type].translation;
   capacityElement.textContent = infoCard.offer.rooms + getCardCapacityRooms(infoCard.offer.rooms) + infoCard.offer.guests + (infoCard.offer.guests === 1 ? ' гостя' : ' гостей');
   timeElement.textContent = 'Заезд после ' + infoCard.offer.checkin + ', выезд до ' + infoCard.offer.checkout;
   featuresListElement.innerHTML = '';
@@ -252,12 +264,19 @@ function changeAddressValue() {
 }
 
 function toggleFormState(formElement) {
-  var formInputs = formElement.querySelectorAll('input');
-  var formSelects = formElement.querySelectorAll('select');
   var disabledClass = formElement.name + '--disabled';
   formElement.classList.toggle(disabledClass);
+  toggleFormInputState(formElement);
+}
+
+function toggleFormInputState(formElement) {
+  var formInputs = formElement.querySelectorAll('input');
+  var formSelects = formElement.querySelectorAll('select');
   for (var i = 0; i < formInputs.length; i++) {
     formInputs[i].disabled = !formInputs[i].disabled;
+    if (formInputs[i].id === 'address') {
+      formInputs[i].disabled = true;
+    }
   }
   for (i = 0; i < formSelects.length; i++) {
     formSelects[i].disabled = !formSelects[i].disabled;
@@ -287,3 +306,101 @@ function showCard(cardElement) {
 mainPinElement.addEventListener('mouseup', mainPinMouseupHandler);
 
 setAddress(mainPinCenterCoords);
+
+
+// #17 Личный проект: доверяй, но проверяй
+
+toggleFormInputState(adFormElement);
+toggleFormInputState(filtersFormElement);
+
+var typeElement = adFormElement.querySelector('#type');
+var priceElement = adFormElement.querySelector('#price');
+var timeInElement = adFormElement.querySelector('#timein');
+var timeOutElement = adFormElement.querySelector('#timeout');
+var roomsNumberElement = adFormElement.querySelector('#room_number');
+var capacityElement = adFormElement.querySelector('#capacity');
+
+function typeSelectChangeHandler() {
+  setPriceParameters();
+}
+
+function setPriceParameters() {
+  var type = typeElement.value;
+  var minPrice = types[type].minprice;
+  priceElement.placeholder = minPrice;
+  priceElement.min = minPrice;
+}
+
+typeElement.addEventListener('change', typeSelectChangeHandler);
+
+timeInElement.addEventListener('change', function() {
+  timeOutElement.value = timeInElement.value;
+});
+
+timeOutElement.addEventListener('change', function() {
+  timeInElement.value = timeOutElement.value;
+});
+
+function setGuestsParameters() {
+  var options = capacityElement.querySelectorAll('option');
+  switch (roomsNumberElement.value) {
+    case '1':
+      for (var i = 0; i < options.length; i++) {
+        options[i].disabled = true;
+        if (options[i].value === '1') {
+          options[i].disabled = false;
+          options[i].selected = true;
+        }
+      }
+      break;
+    case '2':
+      for (var i = 0; i < options.length; i++) {
+        options[i].disabled = true;
+        if (options[i].value === '1') {
+          options[i].disabled = false;
+        }
+        if (options[i].value === '2') {
+          options[i].disabled = false;
+          options[i].selected = true;
+        }
+      }
+      break;
+    case '3':
+      for (var i = 0; i < options.length; i++) {
+        options[i].disabled = true;
+        if (options[i].value === '1') {
+          options[i].disabled = false;
+        }
+        if (options[i].value === '2') {
+          options[i].disabled = false;
+        }
+        if (options[i].value === '3') {
+          options[i].disabled = false;
+          options[i].selected = true;
+        }
+      }
+      break;
+    case '100':
+      for (var i = 0; i < options.length; i++) {
+        options[i].disabled = true;
+        if (options[i].value === '0') {
+          options[i].disabled = false;
+          options[i].selected = true;
+        }
+      }
+      break;
+  }
+}
+
+roomsNumberElement.addEventListener('change', function() {
+  setGuestsParameters();
+});
+
+setPriceParameters();
+setGuestsParameters();
+
+adFormElement.addEventListener('invalid', function (evt) {
+  var target = evt.target;
+  target.style.border = '5px solid red';
+  target.style.boxShadow = 'none';
+}, true);
