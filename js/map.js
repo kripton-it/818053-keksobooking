@@ -139,16 +139,14 @@ function generateData() {
   return array;
 }
 
-function createPin(infoPin, callback) {
+function createPin(infoPin, pinElementClickHandler) {
   var pinElement = pinTemplate.cloneNode(true);
   pinElement.style.left = infoPin.location.x - PIN_WIDTH / 2 + 'px';
   pinElement.style.top = infoPin.location.y - PIN_HEIGHT + 'px';
   var imgElement = pinElement.querySelector('img');
   imgElement.src = infoPin.author.avatar;
   imgElement.alt = infoPin.offer.title;
-  pinElement.addEventListener('click', function (evt) {
-    callback(evt);
-  });
+  pinElement.addEventListener('click', pinElementClickHandler);
   return pinElement;
 }
 
@@ -312,11 +310,9 @@ setAddress(mainPinCenterCoords);
 
 var typeElement = adFormElement.querySelector('#type');
 var priceElement = adFormElement.querySelector('#price');
-var timeInElement = adFormElement.querySelector('#timein');
-var timeOutElement = adFormElement.querySelector('#timeout');
+var timeFieldsetElement = adFormElement.querySelector('.ad-form__element--time');
 var roomsNumberElement = adFormElement.querySelector('#room_number');
 var capacityElement = adFormElement.querySelector('#capacity');
-var adFormSubmitElement = adFormElement.querySelector('.ad-form__submit');
 
 function typeSelectChangeHandler() {
   setPriceParameters();
@@ -347,15 +343,17 @@ function checkRoomsAndCapacity() {
 toggleFormInputState(adFormElement);
 toggleFormInputState(filtersFormElement);
 setPriceParameters();
+checkRoomsAndCapacity();
 
 typeElement.addEventListener('change', typeSelectChangeHandler);
 
-timeInElement.addEventListener('change', function () {
-  timeOutElement.value = timeInElement.value;
-});
-
-timeOutElement.addEventListener('change', function () {
-  timeInElement.value = timeOutElement.value;
+timeFieldsetElement.addEventListener('change', function (evt) {
+  var target = evt.target;
+  if (target.previousElementSibling.tagName === 'SELECT') {
+    target.previousElementSibling.value = target.value;
+  } else if (target.nextElementSibling.tagName === 'SELECT') {
+    target.nextElementSibling.value = target.value;
+  }
 });
 
 roomsNumberElement.addEventListener('change', function () {
@@ -366,8 +364,3 @@ capacityElement.addEventListener('change', function () {
   checkRoomsAndCapacity();
 });
 
-adFormSubmitElement.addEventListener('click', function (evt) {
-  if (checkRoomsAndCapacity()) {
-    evt.preventDefault();
-  }
-});
