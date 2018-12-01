@@ -313,6 +313,7 @@ var priceElement = adFormElement.querySelector('#price');
 var timeFieldsetElement = adFormElement.querySelector('.ad-form__element--time');
 var roomsNumberElement = adFormElement.querySelector('#room_number');
 var capacityElement = adFormElement.querySelector('#capacity');
+var syncTimeSelects = ['timein', 'timeout'];
 
 function typeSelectChangeHandler() {
   setPriceParameters();
@@ -349,10 +350,11 @@ typeElement.addEventListener('change', typeSelectChangeHandler);
 
 timeFieldsetElement.addEventListener('change', function (evt) {
   var target = evt.target;
-  if (target.previousElementSibling.tagName === 'SELECT') {
-    target.previousElementSibling.value = target.value;
-  } else if (target.nextElementSibling.tagName === 'SELECT') {
-    target.nextElementSibling.value = target.value;
+  var selects = timeFieldsetElement.querySelectorAll('select');
+  for (var i = 0; i < selects.length; i++) {
+    if (syncTimeSelects.indexOf(selects[i].id) !== -1) {
+      selects[i].value = target.value;
+    }
   }
 });
 
