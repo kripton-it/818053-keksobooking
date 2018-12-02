@@ -281,15 +281,6 @@ function toggleFormInputState(formElement) {
   }
 }
 
-function mainPinMouseupHandler() {
-  toggleMapState();
-  toggleFormState(adFormElement);
-  toggleFormState(filtersFormElement);
-  changeAddressValue();
-  renderPins(data);
-  mainPinElement.removeEventListener('mouseup', mainPinMouseupHandler);
-}
-
 function removeExistingPopup() {
   var oldCardElement = mapElement.querySelector('.map__card');
   if (oldCardElement) {
@@ -301,10 +292,7 @@ function showCard(cardElement) {
   mapElement.insertBefore(cardElement, mapElement.querySelector('.map__filters-container'));
 }
 
-mainPinElement.addEventListener('mouseup', mainPinMouseupHandler);
-
 setAddress(mainPinCenterCoords);
-
 
 // #17 Личный проект: доверяй, но проверяй
 
@@ -366,3 +354,66 @@ capacityElement.addEventListener('change', function () {
   checkRoomsAndCapacity();
 });
 
+// #19 Личный проект: максимум подвижности
+
+function mainPinMouseupHandler(evt) {
+  evt.preventDefault();
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  function mainPinMouseMoveHandler(moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: moveEvt.clientX - startCoords.x,
+      y: moveEvt.clientY - startCoords.y
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    if (mainPinElement.offsetTop + shift.y < Y_MIN) {
+      mainPinElement.style.top = Y_MIN + 'px';
+    } else if (mainPinElement.offsetTop + shift.y > Y_MAX) {
+      mainPinElement.style.top = Y_MAX + 'px';
+    } else {
+      mainPinElement.style.top = (mainPinElement.offsetTop + shift.y) + 'px';
+    }
+
+    if (mainPinElement.offsetLeft + shift.x < X_MIN) {
+      mainPinElement.style.left = X_MIN + 'px';
+    } else if (mainPinElement.offsetLeft + shift.x > X_MAX - mainPinElement.offsetWidth) {
+      mainPinElement.style.left = (X_MAX - mainPinElement.offsetWidth) + 'px';
+    } else {
+      mainPinElement.style.left = (mainPinElement.offsetLeft + shift.x) + 'px';
+    }
+
+    changeAddressValue();
+  }
+
+  function mainPinMouseUpHandler(upEvt) {
+    upEvt.preventDefault();
+
+    document.removeEventListener('mousemove', mainPinMouseMoveHandler);
+    document.removeEventListener('mouseup', mainPinMouseUpHandler);
+
+    if (mapElement.classList.contains('map--faded')) {
+      toggleMapState();
+      toggleFormState(adFormElement);
+      toggleFormState(filtersFormElement);
+      renderPins(data);
+    }
+
+    changeAddressValue();
+  }
+
+  document.addEventListener('mousemove', mainPinMouseMoveHandler);
+  document.addEventListener('mouseup', mainPinMouseUpHandler);
+}
+
+mainPinElement.addEventListener('mousedown', mainPinMouseupHandler);
