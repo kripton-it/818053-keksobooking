@@ -2,6 +2,8 @@
 
 // #13 Личный проект: пока все дома
 
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 var NUMBER_OF_OBJECTS = 8;
 var NUMBERS = getMixedArray([1, 2, 3, 4, 5, 6, 7, 8]);
 var TITLES = getMixedArray([
@@ -147,6 +149,11 @@ function createPin(infoPin, pinElementClickHandler) {
   imgElement.src = infoPin.author.avatar;
   imgElement.alt = infoPin.offer.title;
   pinElement.addEventListener('click', pinElementClickHandler);
+  pinElement.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      pinElementClickHandler();
+    }
+  });
   return pinElement;
 }
 
@@ -197,6 +204,21 @@ function createPhotosList(photosSrcArray) {
   return fragment;
 }
 
+function cardEscPressHandler(evt) {
+  var cardElement = document.querySelector('.map__card');
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeCard(cardElement);
+  }
+}
+
+function closeCard(cardElement, callback) {
+  cardElement.remove();
+  document.removeEventListener('keydown', cardEscPressHandler);
+  if (callback) {
+    callback();
+  }
+}
+
 function createCard(infoCard, callback) {
   var cardElement = cardTemplate.cloneNode(true);
   var avatarElement = cardElement.querySelector('.popup__avatar');
@@ -223,9 +245,11 @@ function createCard(infoCard, callback) {
   photosListElement.innerHTML = '';
   photosListElement.appendChild(createPhotosList(infoCard.offer.photos));
   popupCloseElement.addEventListener('click', function () {
-    cardElement.remove();
-    if (callback) {
-      callback();
+    closeCard(cardElement, callback);
+  });
+  popupCloseElement.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      closeCard(cardElement, callback);
     }
   });
 
@@ -290,6 +314,7 @@ function removeExistingPopup() {
 
 function showCard(cardElement) {
   mapElement.insertBefore(cardElement, mapElement.querySelector('.map__filters-container'));
+  document.addEventListener('keydown', cardEscPressHandler);
 }
 
 setAddress(mainPinCenterCoords);
