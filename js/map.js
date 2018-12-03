@@ -3,7 +3,6 @@
 // #13 Личный проект: пока все дома
 
 var ESC_KEYCODE = 27;
-var ENTER_KEYCODE = 13;
 var NUMBER_OF_OBJECTS = 8;
 var NUMBERS = getMixedArray([1, 2, 3, 4, 5, 6, 7, 8]);
 var TITLES = getMixedArray([
@@ -149,11 +148,6 @@ function createPin(infoPin, pinElementClickHandler) {
   imgElement.src = infoPin.author.avatar;
   imgElement.alt = infoPin.offer.title;
   pinElement.addEventListener('click', pinElementClickHandler);
-  pinElement.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
-      pinElementClickHandler();
-    }
-  });
   return pinElement;
 }
 
@@ -162,7 +156,9 @@ function renderPins(dataArray) {
   dataArray.forEach(function (dataObject) {
     var newPinElement = createPin(dataObject, function () {
       removeExistingPopup();
-      var cardElement = createCard(dataObject);
+      var cardElement = createCard(dataObject, function () {
+        document.removeEventListener('keydown', cardEscPressHandler);
+      });
       showCard(cardElement);
     });
     fragment.appendChild(newPinElement);
@@ -207,15 +203,7 @@ function createPhotosList(photosSrcArray) {
 function cardEscPressHandler(evt) {
   var cardElement = document.querySelector('.map__card');
   if (evt.keyCode === ESC_KEYCODE) {
-    closeCard(cardElement);
-  }
-}
-
-function closeCard(cardElement, callback) {
-  cardElement.remove();
-  document.removeEventListener('keydown', cardEscPressHandler);
-  if (callback) {
-    callback();
+    cardElement.remove();
   }
 }
 
@@ -245,11 +233,9 @@ function createCard(infoCard, callback) {
   photosListElement.innerHTML = '';
   photosListElement.appendChild(createPhotosList(infoCard.offer.photos));
   popupCloseElement.addEventListener('click', function () {
-    closeCard(cardElement, callback);
-  });
-  popupCloseElement.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
-      closeCard(cardElement, callback);
+    cardElement.remove();
+    if (callback) {
+      callback();
     }
   });
 
@@ -342,16 +328,15 @@ function setPriceParameters() {
 function checkRoomsAndCapacity() {
   var roomsOptionValueLastDigit = +roomsNumberElement.value % 100;
   var capacityOptionValue = +capacityElement.value;
-  var isValid = false;
+  var errorMessage = '';
+
   if (roomsOptionValueLastDigit < 2 && roomsOptionValueLastDigit !== capacityOptionValue) {
-    capacityElement.setCustomValidity('Введите допустимое количество гостей');
+    errorMessage = 'Введите допустимое количество гостей';
   } else if (roomsOptionValueLastDigit >= 2 && (roomsOptionValueLastDigit < capacityOptionValue || capacityOptionValue === 0)) {
-    capacityElement.setCustomValidity('Введите допустимое количество гостей');
-  } else {
-    capacityElement.setCustomValidity('');
-    isValid = true;
+    errorMessage = 'Введите допустимое количество гостей';
   }
-  return isValid;
+
+  capacityElement.setCustomValidity(errorMessage);
 }
 
 toggleFormInputState(adFormElement);
@@ -415,19 +400,22 @@ function mainPinMouseMoveHandler(evt) {
   changeAddressValue();
 }
 
-function mainPinMouseUpHandler(evt) {
-  evt.preventDefault();
-
-  document.removeEventListener('mousemove', mainPinMouseMoveHandler);
-  document.removeEventListener('mouseup', mainPinMouseUpHandler);
-
+function activatePage() {
   if (mapElement.classList.contains('map--faded')) {
     toggleMapState();
     toggleFormState(adFormElement);
     toggleFormState(filtersFormElement);
     renderPins(data);
   }
+}
 
+function mainPinMouseUpHandler(evt) {
+  evt.preventDefault();
+
+  document.removeEventListener('mousemove', mainPinMouseMoveHandler);
+  document.removeEventListener('mouseup', mainPinMouseUpHandler);
+
+  activatePage();
   changeAddressValue();
 }
 
