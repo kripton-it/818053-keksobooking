@@ -35,10 +35,8 @@
   }
 
   function toggleFormInputState(formElement) {
-    var formFieldsets = formElement.querySelectorAll('fieldset');
-
-    for (var i = 0; i < formFieldsets.length; i++) {
-      formFieldsets[i].disabled = !formFieldsets[i].disabled;
+    for (var i = 0; i < formElement.children.length; i++) {
+      formElement.children[i].disabled = !formElement.children[i].disabled;
     }
   }
 
@@ -72,8 +70,6 @@
 
     capacityElement.setCustomValidity(errorMessage);
   }
-
-  addressInputElement.readOnly = true;
 
   typeElement.addEventListener('change', typeSelectChangeHandler);
 
