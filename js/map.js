@@ -6,6 +6,13 @@
   var mapElement = document.querySelector('.map');
   var pinsContainer = document.querySelector('.map__pins');
   var mainPinElement = mapElement.querySelector('.map__pin--main');
+  var mainPinMouseUpCallback = null;
+  var mainPinMouseMoveCallback = null;
+  var startCoords = {};
+
+  function fillMap(element) {
+    pinsContainer.appendChild(element);
+  }
 
   function getMainPinCoordinates() {
     var coords = {
@@ -49,59 +56,15 @@
       mainPinElement.style.left = (mainPinElement.offsetLeft + shift.x) + 'px';
     }
 
-    mainPinMouseMoveCallback();
+    if (mainPinMouseMoveCallback) {
+      mainPinMouseMoveCallback();
+    }
 
-  }
-
-  function renderPins(dataArray) {
-    var fragment = document.createDocumentFragment();
-    dataArray.forEach(function (dataObject) {
-      var newPinElement = window.pin.createPin(dataObject, function () {
-        removeExistingPopup();
-
-        var cardElement = window.card.createCard(dataObject, createCardCallback);
-        showCard(cardElement);
-      });
-      fragment.appendChild(newPinElement);
-    });
-    pinsContainer.appendChild(fragment);
-  }
-
-  function createCardCallback() {
-    document.removeEventListener('keydown', window.card.cardEscPressHandler);
   }
 
   function toggleMapState() {
     mapElement.classList.toggle('map--faded');
   }
-
-  function showCard(cardElement) {
-    mapElement.insertBefore(cardElement, mapElement.querySelector('.map__filters-container'));
-    document.addEventListener('keydown', window.card.cardEscPressHandler);
-  }
-
-  function removeExistingPopup() {
-    var oldCardElement = mapElement.querySelector('.map__card');
-    if (oldCardElement) {
-      oldCardElement.remove();
-    }
-  }
-
-  var activatePage = null;
-
-  function setActivatePage(callback) {
-    if (mapElement.classList.contains('map--faded')) {
-      activatePage = callback;
-    } else {
-      activatePage = null;
-    }
-
-    window.map.activatePage = activatePage;
-  }
-
-  var mainPinMouseUpHandler = null;
-  var mainPinMouseMoveCallback = null;
-  var startCoords = {};
 
   function mainPinMouseDownHandler(evt) {
     evt.preventDefault();
@@ -115,25 +78,32 @@
     document.addEventListener('mouseup', mainPinMouseUpHandler);
   }
 
-  mainPinElement.addEventListener('mousedown', mainPinMouseDownHandler);
+  function mainPinMouseUpHandler(evt) {
+    evt.preventDefault();
+
+    document.removeEventListener('mousemove', mainPinMouseMoveHandler);
+    document.removeEventListener('mouseup', mainPinMouseUpHandler);
+
+    if (mainPinMouseUpCallback) {
+      mainPinMouseUpCallback();
+    }
+  }
 
   function setPinMouseUpCallback(callback) {
-    mainPinMouseUpHandler = callback;
+    mainPinMouseUpCallback = callback;
   }
 
   function setPinMouseMoveCallback(callback) {
     mainPinMouseMoveCallback = callback;
   }
 
+  mainPinElement.addEventListener('mousedown', mainPinMouseDownHandler);
+
   window.map = {
-    activatePage: activatePage,
-    setActivatePage: setActivatePage,
+    fill: fillMap,
     getMainPinCoordinates: getMainPinCoordinates,
     setPinMouseUpCallback: setPinMouseUpCallback,
     setPinMouseMoveCallback: setPinMouseMoveCallback,
-    mainPinMouseUpHandler: mainPinMouseUpHandler,
-    mainPinMouseMoveHandler: mainPinMouseMoveHandler,
-    renderPins: renderPins,
     toggleMapState: toggleMapState
   };
 })();

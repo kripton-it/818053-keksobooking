@@ -11,13 +11,27 @@
   var roomsNumberElement = adFormElement.querySelector('#room_number');
   var capacityElement = adFormElement.querySelector('#capacity');
   var syncTimeSelects = ['timein', 'timeout'];
+  var types = {
+    palace: {
+      translation: 'Дворец',
+      minprice: 10000
+    },
+    flat: {
+      translation: 'Квартира',
+      minprice: 1000
+    },
+    house: {
+      translation: 'Дом',
+      minprice: 5000
+    },
+    bungalo: {
+      translation: 'Бунгало',
+      minprice: 0
+    }
+  };
 
   function setAddress(coords) {
     addressInputElement.value = coords.x + ', ' + coords.y;
-  }
-
-  function changeAddressValue() {
-    setAddress(window.map.getMainPinCoordinates());
   }
 
   function toggleFormInputState(formElement) {
@@ -26,7 +40,7 @@
     for (var i = 0; i < formInputs.length; i++) {
       formInputs[i].disabled = !formInputs[i].disabled;
       if (formInputs[i].id === 'address') {
-        formInputs[i].disabled = true;
+        formInputs[i].readOnly = true;
       }
     }
     for (i = 0; i < formSelects.length; i++) {
@@ -46,7 +60,7 @@
 
   function setPriceParameters() {
     var type = typeElement.value;
-    var minPrice = window.data.types[type].minprice;
+    var minPrice = types[type].minprice;
     priceElement.placeholder = minPrice;
     priceElement.min = minPrice;
   }
@@ -85,14 +99,15 @@
     checkRoomsAndCapacity();
   });
 
+  toggleFormInputState(adFormElement);
+  toggleFormInputState(filtersFormElement);
+  setPriceParameters();
+  checkRoomsAndCapacity();
+
   window.form = {
     adFormElement: adFormElement,
     filtersFormElement: filtersFormElement,
     setAddress: setAddress,
-    setPriceParameters: setPriceParameters,
-    changeAddressValue: changeAddressValue,
-    toggleFormState: toggleFormState,
-    checkRoomsAndCapacity: checkRoomsAndCapacity,
-    toggleFormInputState: toggleFormInputState
+    toggleFormState: toggleFormState
   };
 })();

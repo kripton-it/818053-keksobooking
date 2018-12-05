@@ -92,7 +92,6 @@
   var mock = generateData();
 
   window.data = {
-    mock: mock,
-    types: types
+    mock: mock
   };
 })();

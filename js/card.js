@@ -78,24 +78,16 @@
     photosListElement.innerHTML = '';
     photosListElement.appendChild(createPhotosList(infoCard.offer.photos));
     popupCloseElement.addEventListener('click', function () {
-      cardElement.remove();
       if (callback) {
-        callback();
+        callback(); // ???? вынести из обработчика?
       }
+      cardElement.remove();
     });
 
     return cardElement;
   }
 
-  function cardEscPressHandler(evt) {
-    var cardElement = document.querySelector('.map__card');
-    if (evt.keyCode === window.utils.ESC_KEYCODE) {
-      cardElement.remove();
-    }
-  }
-
   window.card = {
-    createCard: createCard,
-    cardEscPressHandler: cardEscPressHandler
+    createCard: createCard
   };
 })();
