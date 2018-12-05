@@ -19,7 +19,7 @@
   }
 
   function createCardCallback() {
-    document.addEventListener('keydown', documentEscPressHandler);
+    document.removeEventListener('keyup', documentEscPressHandler);
   }
 
   function prepareElements(dataArray) {
@@ -31,7 +31,7 @@
           activeCard.remove();
         }
         activeCard = cardElement;
-        // ??? document.addEventListener('keydown', documentEscPressHandler);
+        document.addEventListener('keyup', documentEscPressHandler);
         window.map.fill(cardElement);
       });
       fragment.appendChild(newPinElement);
@@ -45,7 +45,7 @@
       if (activeCard) {
         activeCard.remove();
       }
-      document.removeEventListener('keypress', documentEscPressHandler);
+      document.removeEventListener('keyup', documentEscPressHandler);
     }
   }
 

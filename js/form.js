@@ -35,16 +35,10 @@
   }
 
   function toggleFormInputState(formElement) {
-    var formInputs = formElement.querySelectorAll('input');
-    var formSelects = formElement.querySelectorAll('select');
-    for (var i = 0; i < formInputs.length; i++) {
-      formInputs[i].disabled = !formInputs[i].disabled;
-      if (formInputs[i].id === 'address') {
-        formInputs[i].readOnly = true;
-      }
-    }
-    for (i = 0; i < formSelects.length; i++) {
-      formSelects[i].disabled = !formSelects[i].disabled;
+    var formFieldsets = formElement.querySelectorAll('fieldset');
+
+    for (var i = 0; i < formFieldsets.length; i++) {
+      formFieldsets[i].disabled = !formFieldsets[i].disabled;
     }
   }
 
@@ -79,6 +73,8 @@
     capacityElement.setCustomValidity(errorMessage);
   }
 
+  addressInputElement.readOnly = true;
+
   typeElement.addEventListener('change', typeSelectChangeHandler);
 
   timeFieldsetElement.addEventListener('change', function (evt) {
@@ -105,6 +101,7 @@
   checkRoomsAndCapacity();
 
   window.form = {
+    types: types,
     adFormElement: adFormElement,
     filtersFormElement: filtersFormElement,
     setAddress: setAddress,

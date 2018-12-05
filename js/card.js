@@ -69,7 +69,7 @@
     titleElement.textContent = infoCard.offer.title;
     addressElement.textContent = infoCard.offer.address;
     priceElement.innerHTML = infoCard.offer.price + '&#x20bd;<span>/ночь</span>';
-    typeElement.textContent = window.data.types[infoCard.offer.type].translation;
+    typeElement.textContent = window.form.types[infoCard.offer.type].translation;
     capacityElement.textContent = infoCard.offer.rooms + getCardCapacityRooms(infoCard.offer.rooms) + infoCard.offer.guests + (infoCard.offer.guests === 1 ? ' гостя' : ' гостей');
     timeElement.textContent = 'Заезд после ' + infoCard.offer.checkin + ', выезд до ' + infoCard.offer.checkout;
     featuresListElement.innerHTML = '';
@@ -79,7 +79,7 @@
     photosListElement.appendChild(createPhotosList(infoCard.offer.photos));
     popupCloseElement.addEventListener('click', function () {
       if (callback) {
-        callback(); // ???? вынести из обработчика?
+        callback();
       }
       cardElement.remove();
     });
