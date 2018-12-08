@@ -4,6 +4,15 @@
 
   var activeCard = null;
 
+  // записываем адрес в поле формы
+  window.form.setAddress(window.map.getMainPinCoordinates());
+  // задаём колбэк для mouseUp после первого перетаскивания пина - активировать страницу
+  window.map.setPinMouseUpCallback(activatePage);
+  // задаём колбэк для mouseMove пина - переписать адрес в поле формы
+  window.map.setPinMouseMoveCallback(function () {
+    window.form.setAddress(window.map.getMainPinCoordinates());
+  });
+
   function activatePage() {
     // переключаем состояние карты
     window.map.toggleMapState();
@@ -11,11 +20,18 @@
     window.form.toggleFormState(window.form.adFormElement);
     window.form.toggleFormState(window.form.filtersFormElement);
     //
-    var pins = prepareElements(window.data.mock);
-    //
+    // var pins = prepareElements(window.data.mock);
+    window.backend.load(loadSuccessHandler, onError);
+  }
+
+  function loadSuccessHandler(array) {
+    var pins = prepareElements(array);
     window.map.fill(pins);
-    // отменяем колбэк
     window.map.setPinMouseUpCallback(null);
+  }
+
+  function onError(message) {
+    alert(message);
   }
 
   function createCardCallback() {
@@ -49,12 +65,4 @@
     }
   }
 
-  // записываем адрес в поле формы
-  window.form.setAddress(window.map.getMainPinCoordinates());
-  // задаём колбэк для mouseUp после первого перетаскивания пина - активировать страницу
-  window.map.setPinMouseUpCallback(activatePage);
-  // задаём колбэк для mouseMove пина - переписать адрес в поле формы
-  window.map.setPinMouseMoveCallback(function () {
-    window.form.setAddress(window.map.getMainPinCoordinates());
-  });
 })();

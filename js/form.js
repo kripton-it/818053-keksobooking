@@ -2,14 +2,6 @@
 
 (function () {
 
-  var adFormElement = document.querySelector('.ad-form');
-  var filtersFormElement = document.querySelector('.map__filters');
-  var addressInputElement = adFormElement.querySelector('#address');
-  var typeElement = adFormElement.querySelector('#type');
-  var priceElement = adFormElement.querySelector('#price');
-  var timeFieldsetElement = adFormElement.querySelector('.ad-form__element--time');
-  var roomsNumberElement = adFormElement.querySelector('#room_number');
-  var capacityElement = adFormElement.querySelector('#capacity');
   var syncTimeSelects = ['timein', 'timeout'];
   var types = {
     palace: {
@@ -29,6 +21,53 @@
       minprice: 0
     }
   };
+
+  var adFormElement = document.querySelector('.ad-form');
+  var filtersFormElement = document.querySelector('.map__filters');
+  var addressInputElement = adFormElement.querySelector('#address');
+  var typeElement = adFormElement.querySelector('#type');
+  var priceElement = adFormElement.querySelector('#price');
+  var timeFieldsetElement = adFormElement.querySelector('.ad-form__element--time');
+  var roomsNumberElement = adFormElement.querySelector('#room_number');
+  var capacityElement = adFormElement.querySelector('#capacity');
+
+  toggleFormInputState(adFormElement);
+  toggleFormInputState(filtersFormElement);
+  setPriceParameters();
+  checkRoomsAndCapacity();
+
+  typeElement.addEventListener('change', typeSelectChangeHandler);
+
+  timeFieldsetElement.addEventListener('change', function (evt) {
+    var target = evt.target;
+    var selects = timeFieldsetElement.querySelectorAll('select');
+    for (var i = 0; i < selects.length; i++) {
+      if (syncTimeSelects.indexOf(selects[i].id) !== -1) {
+        selects[i].value = target.value;
+      }
+    }
+  });
+
+  roomsNumberElement.addEventListener('change', function () {
+    checkRoomsAndCapacity();
+  });
+
+  capacityElement.addEventListener('change', function () {
+    checkRoomsAndCapacity();
+  });
+
+  adFormElement.addEventListener('submit', function (evt) {
+    window.backend.upload(new FormData(adFormElement), onLoad, onError);
+    evt.preventDefault();
+  });
+
+  function onLoad() {
+    alert('onload');
+  }
+
+  function onError() {
+    alert('onerror');
+  }
 
   function setAddress(coords) {
     addressInputElement.value = coords.x + ', ' + coords.y;
@@ -70,31 +109,6 @@
 
     capacityElement.setCustomValidity(errorMessage);
   }
-
-  typeElement.addEventListener('change', typeSelectChangeHandler);
-
-  timeFieldsetElement.addEventListener('change', function (evt) {
-    var target = evt.target;
-    var selects = timeFieldsetElement.querySelectorAll('select');
-    for (var i = 0; i < selects.length; i++) {
-      if (syncTimeSelects.indexOf(selects[i].id) !== -1) {
-        selects[i].value = target.value;
-      }
-    }
-  });
-
-  roomsNumberElement.addEventListener('change', function () {
-    checkRoomsAndCapacity();
-  });
-
-  capacityElement.addEventListener('change', function () {
-    checkRoomsAndCapacity();
-  });
-
-  toggleFormInputState(adFormElement);
-  toggleFormInputState(filtersFormElement);
-  setPriceParameters();
-  checkRoomsAndCapacity();
 
   window.form = {
     types: types,

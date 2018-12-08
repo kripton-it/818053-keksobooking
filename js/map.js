@@ -3,12 +3,15 @@
 (function () {
 
   var MAIN_PIN_HEIGHT = 22;
+
   var mapElement = document.querySelector('.map');
   var pinsContainer = document.querySelector('.map__pins');
   var mainPinElement = mapElement.querySelector('.map__pin--main');
   var mainPinMouseUpCallback = null;
   var mainPinMouseMoveCallback = null;
   var startCoords = {};
+
+  mainPinElement.addEventListener('mousedown', mainPinMouseDownHandler);
 
   function fillMap(element) {
     pinsContainer.appendChild(element);
@@ -96,8 +99,6 @@
   function setPinMouseMoveCallback(callback) {
     mainPinMouseMoveCallback = callback;
   }
-
-  mainPinElement.addEventListener('mousedown', mainPinMouseDownHandler);
 
   window.map = {
     fill: fillMap,
