@@ -10,11 +10,26 @@
   var mainPinMouseUpCallback = null;
   var mainPinMouseMoveCallback = null;
   var startCoords = {};
+  var mainPinStartCoords = {
+    left: mainPinElement.style.left,
+    top: mainPinElement.style.top
+  };
 
   mainPinElement.addEventListener('mousedown', mainPinMouseDownHandler);
 
+  function returnMainPinToStartPosition() {
+    mainPinElement.style.left = mainPinStartCoords.left;
+    mainPinElement.style.top = mainPinStartCoords.top;
+  }
+
   function fillMap(element) {
     pinsContainer.appendChild(element);
+  }
+
+  function clearMap() {
+    window.pin.removePins();
+    window.card.removeCard();
+    returnMainPinToStartPosition();
   }
 
   function getMainPinCoordinates() {
@@ -102,6 +117,7 @@
 
   window.map = {
     fill: fillMap,
+    clearMap: clearMap,
     getMainPinCoordinates: getMainPinCoordinates,
     setPinMouseUpCallback: setPinMouseUpCallback,
     setPinMouseMoveCallback: setPinMouseMoveCallback,

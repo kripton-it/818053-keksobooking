@@ -12,26 +12,28 @@
   window.map.setPinMouseMoveCallback(function () {
     window.form.setAddress(window.map.getMainPinCoordinates());
   });
+  window.form.setDesactivateCallback(function () {
+    window.map.setPinMouseUpCallback(activatePage);
+  });
 
   function activatePage() {
     // переключаем состояние карты
     window.map.toggleMapState();
     // переключаем состояние форм
     window.form.toggleFormState(window.form.adFormElement);
-    window.form.toggleFormState(window.form.filtersFormElement);
-    //
-    // var pins = prepareElements(window.data.mock);
-    window.backend.load(loadSuccessHandler, onError);
+
+    window.backend.load(loadSuccessHandler, loadErrorHandler);
   }
 
   function loadSuccessHandler(array) {
     var pins = prepareElements(array);
     window.map.fill(pins);
     window.map.setPinMouseUpCallback(null);
+    window.form.toggleFormState(window.form.filtersFormElement);
   }
 
-  function onError(message) {
-    alert(message);
+  function loadErrorHandler() {
+    window.form.showErrorMessage();
   }
 
   function createCardCallback() {
@@ -41,7 +43,13 @@
   function prepareElements(dataArray) {
     var fragment = document.createDocumentFragment();
     dataArray.forEach(function (dataObject) {
-      var newPinElement = window.pin.createPin(dataObject, function () {
+      var newPinElement = window.pin.createPin(dataObject, function (evt) {
+        var target = evt.target.closest('.map__pin');
+        var activePin = target.parentNode.querySelector('.map__pin--active');
+        if (activePin) {
+          activePin.classList.remove('map__pin--active');
+        }
+        target.classList.add('map__pin--active');
         var cardElement = window.card.createCard(dataObject, createCardCallback);
         if (activeCard) {
           activeCard.remove();
@@ -50,7 +58,9 @@
         document.addEventListener('keyup', documentEscPressHandler);
         window.map.fill(cardElement);
       });
-      fragment.appendChild(newPinElement);
+      if (newPinElement) {
+        fragment.appendChild(newPinElement);
+      }
     });
     return fragment;
   }
