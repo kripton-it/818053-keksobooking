@@ -3,15 +3,47 @@
 (function () {
 
   var MAIN_PIN_HEIGHT = 22;
+
   var mapElement = document.querySelector('.map');
   var pinsContainer = document.querySelector('.map__pins');
   var mainPinElement = mapElement.querySelector('.map__pin--main');
   var mainPinMouseUpCallback = null;
   var mainPinMouseMoveCallback = null;
   var startCoords = {};
+  var mainPinStartCoords = {
+    left: mainPinElement.style.left,
+    top: mainPinElement.style.top
+  };
+
+  mainPinElement.addEventListener('mousedown', mainPinMouseDownHandler);
 
   function fillMap(element) {
     pinsContainer.appendChild(element);
+  }
+
+  function returnMainPinToStartPosition() {
+    mainPinElement.style.left = mainPinStartCoords.left;
+    mainPinElement.style.top = mainPinStartCoords.top;
+  }
+
+  function removePins() {
+    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    for (var i = 0; i < pins.length; i++) {
+      pins[i].remove();
+    }
+  }
+
+  function removeCard() {
+    var activeCard = document.querySelector('.map__card');
+    if (activeCard) {
+      activeCard.remove();
+    }
+  }
+
+  function clearMap() {
+    removePins();
+    removeCard();
+    returnMainPinToStartPosition();
   }
 
   function getMainPinCoordinates() {
@@ -97,13 +129,12 @@
     mainPinMouseMoveCallback = callback;
   }
 
-  mainPinElement.addEventListener('mousedown', mainPinMouseDownHandler);
-
   window.map = {
     fill: fillMap,
+    clear: clearMap,
     getMainPinCoordinates: getMainPinCoordinates,
     setPinMouseUpCallback: setPinMouseUpCallback,
     setPinMouseMoveCallback: setPinMouseMoveCallback,
-    toggleMapState: toggleMapState
+    toggleState: toggleMapState
   };
 })();

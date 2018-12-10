@@ -4,51 +4,6 @@
 
   var activeCard = null;
 
-  function activatePage() {
-    // переключаем состояние карты
-    window.map.toggleMapState();
-    // переключаем состояние форм
-    window.form.toggleFormState(window.form.adFormElement);
-    window.form.toggleFormState(window.form.filtersFormElement);
-    //
-    var pins = prepareElements(window.data.mock);
-    //
-    window.map.fill(pins);
-    // отменяем колбэк
-    window.map.setPinMouseUpCallback(null);
-  }
-
-  function createCardCallback() {
-    document.removeEventListener('keyup', documentEscPressHandler);
-  }
-
-  function prepareElements(dataArray) {
-    var fragment = document.createDocumentFragment();
-    dataArray.forEach(function (dataObject) {
-      var newPinElement = window.pin.createPin(dataObject, function () {
-        var cardElement = window.card.createCard(dataObject, createCardCallback);
-        if (activeCard) {
-          activeCard.remove();
-        }
-        activeCard = cardElement;
-        document.addEventListener('keyup', documentEscPressHandler);
-        window.map.fill(cardElement);
-      });
-      fragment.appendChild(newPinElement);
-    });
-    return fragment;
-  }
-
-  // закрытие открытой карточки по Esc
-  function documentEscPressHandler(evt) {
-    if (evt.keyCode === window.utils.ESC_KEYCODE) {
-      if (activeCard) {
-        activeCard.remove();
-      }
-      document.removeEventListener('keyup', documentEscPressHandler);
-    }
-  }
-
   // записываем адрес в поле формы
   window.form.setAddress(window.map.getMainPinCoordinates());
   // задаём колбэк для mouseUp после первого перетаскивания пина - активировать страницу
@@ -57,4 +12,73 @@
   window.map.setPinMouseMoveCallback(function () {
     window.form.setAddress(window.map.getMainPinCoordinates());
   });
+  // задаём колбэк для успешной отправки формы - деактивировать страницу
+  window.form.setSuccessHandlerCallback(function () {
+    desactivatePage();
+  });
+  // задаём колбэк для сброса формы - деактивировать страницу
+  window.form.setResetFormCallback(function () {
+    desactivatePage();
+  });
+
+  function activatePage() {
+    window.backend.load(loadSuccessHandler, loadErrorHandler);
+  }
+
+  function desactivatePage() {
+    window.map.clear();
+    window.map.toggleState();
+    window.form.setAddress(window.map.getMainPinCoordinates());
+    window.form.reset();
+    window.form.toggleAll();
+    window.map.setPinMouseUpCallback(activatePage);
+  }
+
+  function loadSuccessHandler(array) {
+    window.map.toggleState();
+    window.form.toggleAll();
+    var pins = prepareElements(array);
+    window.map.fill(pins);
+    window.map.setPinMouseUpCallback(null);
+  }
+
+  function loadErrorHandler() {
+    window.message.showErrorMessage();
+  }
+
+  function removeCardCallback() {
+    var activePin = document.querySelector('.map__pin--active');
+    if (activePin) {
+      activePin.classList.remove('map__pin--active');
+    }
+
+    document.removeEventListener('keyup', documentEscPressHandler);
+  }
+
+  function prepareElements(dataArray) {
+    var fragment = document.createDocumentFragment();
+    dataArray.forEach(function (dataObject) {
+      var newPinElement = window.pin.create(dataObject, function (evt) {
+        var target = evt.target.closest('.map__pin');
+        window.card.remove(activeCard, removeCardCallback);
+        target.classList.add('map__pin--active');
+        activeCard = window.card.create(dataObject, removeCardCallback);
+        document.addEventListener('keyup', documentEscPressHandler);
+        window.map.fill(activeCard);
+      });
+      if (newPinElement) {
+        fragment.appendChild(newPinElement);
+      }
+    });
+    return fragment;
+  }
+
+  // закрытие открытой карточки по Esc
+  function documentEscPressHandler(evt) {
+    if (evt.keyCode === window.utils.ESC_KEYCODE) {
+      activeCard.remove();
+      removeCardCallback();
+    }
+  }
+
 })();
