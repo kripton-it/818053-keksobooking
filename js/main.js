@@ -76,7 +76,8 @@
   // закрытие открытой карточки по Esc
   function documentEscPressHandler(evt) {
     if (evt.keyCode === window.utils.ESC_KEYCODE) {
-      window.card.remove(activeCard, removeCardCallback);
+      activeCard.remove();
+      removeCardCallback();
     }
   }
 

@@ -110,24 +110,19 @@
     }
 
     popupCloseElement.addEventListener('click', function () {
-      removeCard(cardElement, callback);
+      if (cardElement) {
+        if (callback) {
+          callback();
+        }
+
+        cardElement.remove();
+      }
     });
 
     return cardElement;
   }
 
-  function removeCard(cardElement, callback) {
-    if (cardElement) {
-      if (callback) {
-        callback();
-      }
-
-      cardElement.remove();
-    }
-  }
-
   window.card = {
-    create: createCard,
-    remove: removeCard
+    create: createCard
   };
 })();
