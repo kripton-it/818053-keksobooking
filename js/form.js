@@ -30,19 +30,8 @@
   var timeFieldsetElement = adFormElement.querySelector('.ad-form__element--time');
   var roomsNumberElement = adFormElement.querySelector('#room_number');
   var capacityElement = adFormElement.querySelector('#capacity');
-  var startFormState = {
-    title: adFormElement.querySelector('#title').value,
-    type: typeElement.value,
-    price: priceElement.value,
-    timein: timeFieldsetElement.querySelector('#timein').value,
-    timeout: timeFieldsetElement.querySelector('#timeout').value,
-    rooms: roomsNumberElement.value,
-    capacity: capacityElement.value,
-    description: adFormElement.querySelector('#description').textContent
-  };
   var successHandlerCallback = null;
   var resetFormCallback = null;
-  // var resetButtonElement = adFormElement.querySelector('.ad-form__reset');
 
   toggleFormInputState(adFormElement);
   toggleFormInputState(filtersFormElement);
@@ -95,21 +84,11 @@
     window.message.showErrorMessage();
   }
 
-  function resetAdForm() {
-    var features = adFormElement.querySelectorAll('.feature__checkbox');
-    for (var i = 0; i < features.length; i++) {
-      features[i].checked = false;
+  function resetForms() {
+    var forms = document.querySelectorAll('form');
+    for (var i = 0; i < forms.length; i++) {
+      forms[i].reset();
     }
-    adFormElement.querySelector('#title').value = startFormState.title;
-    typeElement.value = startFormState.type;
-    priceElement.value = startFormState.price;
-    timeFieldsetElement.querySelector('#timein').value = startFormState.timein;
-    timeFieldsetElement.querySelector('#timeout').value = startFormState.timeout;
-    roomsNumberElement.value = startFormState.rooms;
-    capacityElement.value = startFormState.capacity;
-    adFormElement.querySelector('#description').textContent = startFormState.description;
-
-    // при необходимости, здесь же будет сброс фотографий автора и фотографий жилья
   }
 
   function setAddress(coords) {
@@ -161,9 +140,9 @@
   window.form = {
     types: types,
     setAddress: setAddress,
-    toggleAllForms: toggleAllForms,
+    toggleAll: toggleAllForms,
     setSuccessHandlerCallback: setSuccessHandlerCallback,
     setResetFormCallback: setResetFormCallback,
-    resetAdForm: resetAdForm
+    reset: resetForms
   };
 })();
