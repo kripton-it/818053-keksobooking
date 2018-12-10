@@ -26,41 +26,43 @@
   }
 
   function desactivatePage() {
-    window.map.clearMap();
-    window.map.toggleMapState();
+    window.map.clear();
+    window.map.toggleState();
     window.form.setAddress(window.map.getMainPinCoordinates());
-    window.form.resetAdForm();
-    window.form.toggleAllForms();
+    window.form.reset();
+    window.form.toggleAll();
     window.map.setPinMouseUpCallback(activatePage);
   }
 
   function loadSuccessHandler(array) {
-    window.map.toggleMapState();
-    window.form.toggleAllForms();
+    window.map.toggleState();
+    window.form.toggleAll();
     var pins = prepareElements(array);
     window.map.fill(pins);
     window.map.setPinMouseUpCallback(null);
   }
 
   function loadErrorHandler() {
-    window.form.showErrorMessage();
+    window.message.showErrorMessage();
   }
 
-  function createCardCallback() {
+  function removeCardCallback() {
+    var activePin = document.querySelector('.map__pin--active');
+    activePin.classList.remove('map__pin--active');
     document.removeEventListener('keyup', documentEscPressHandler);
   }
 
   function prepareElements(dataArray) {
     var fragment = document.createDocumentFragment();
     dataArray.forEach(function (dataObject) {
-      var newPinElement = window.pin.createPin(dataObject, function (evt) {
+      var newPinElement = window.pin.create(dataObject, function (evt) {
         var target = evt.target.closest('.map__pin');
         var activePin = target.parentNode.querySelector('.map__pin--active');
         if (activePin) {
           activePin.classList.remove('map__pin--active');
         }
         target.classList.add('map__pin--active');
-        var cardElement = window.card.createCard(dataObject, createCardCallback);
+        var cardElement = window.card.create(dataObject, removeCardCallback);
         if (activeCard) {
           activeCard.remove();
         }
@@ -78,9 +80,7 @@
   // закрытие открытой карточки по Esc
   function documentEscPressHandler(evt) {
     if (evt.keyCode === window.utils.ESC_KEYCODE) {
-      if (activeCard) {
-        activeCard.remove();
-      }
+      activeCard.remove();
       document.removeEventListener('keyup', documentEscPressHandler);
     }
   }

@@ -131,10 +131,10 @@
 
   window.map = {
     fill: fillMap,
-    clearMap: clearMap,
+    clear: clearMap,
     getMainPinCoordinates: getMainPinCoordinates,
     setPinMouseUpCallback: setPinMouseUpCallback,
     setPinMouseMoveCallback: setPinMouseMoveCallback,
-    toggleMapState: toggleMapState
+    toggleState: toggleMapState
   };
 })();
