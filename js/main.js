@@ -48,7 +48,10 @@
 
   function removeCardCallback() {
     var activePin = document.querySelector('.map__pin--active');
-    activePin.classList.remove('map__pin--active');
+    if (activePin) {
+      activePin.classList.remove('map__pin--active');
+    }
+
     document.removeEventListener('keyup', documentEscPressHandler);
   }
 
@@ -57,18 +60,11 @@
     dataArray.forEach(function (dataObject) {
       var newPinElement = window.pin.create(dataObject, function (evt) {
         var target = evt.target.closest('.map__pin');
-        var activePin = target.parentNode.querySelector('.map__pin--active');
-        if (activePin) {
-          activePin.classList.remove('map__pin--active');
-        }
+        window.card.remove(activeCard, removeCardCallback);
         target.classList.add('map__pin--active');
-        var cardElement = window.card.create(dataObject, removeCardCallback);
-        if (activeCard) {
-          activeCard.remove();
-        }
-        activeCard = cardElement;
+        activeCard = window.card.create(dataObject, removeCardCallback);
         document.addEventListener('keyup', documentEscPressHandler);
-        window.map.fill(cardElement);
+        window.map.fill(activeCard);
       });
       if (newPinElement) {
         fragment.appendChild(newPinElement);

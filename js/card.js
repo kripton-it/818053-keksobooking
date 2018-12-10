@@ -117,10 +117,13 @@
   }
 
   function removeCard(cardElement, callback) {
-    if (callback) {
-      callback();
+    if (cardElement) {
+      if (callback) {
+        callback();
+      }
+
+      cardElement.remove();
     }
-    cardElement.remove();
   }
 
   window.card = {
