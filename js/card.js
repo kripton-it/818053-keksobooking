@@ -119,15 +119,7 @@
     return cardElement;
   }
 
-  function removeCard() {
-    var activeCard = document.querySelector('.map__card');
-    if (activeCard) {
-      activeCard.remove();
-    }
-  }
-
   window.card = {
-    createCard: createCard,
-    removeCard: removeCard
+    createCard: createCard
   };
 })();

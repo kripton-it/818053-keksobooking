@@ -12,24 +12,34 @@
   window.map.setPinMouseMoveCallback(function () {
     window.form.setAddress(window.map.getMainPinCoordinates());
   });
-  window.form.setDesactivateCallback(function () {
-    window.map.setPinMouseUpCallback(activatePage);
+  // задаём колбэк для успешной отправки формы - деактивировать страницу
+  window.form.setSuccessHandlerCallback(function () {
+    desactivatePage();
+  });
+  // задаём колбэк для сброса формы - деактивировать страницу
+  window.form.setResetFormCallback(function () {
+    desactivatePage();
   });
 
   function activatePage() {
-    // переключаем состояние карты
-    window.map.toggleMapState();
-    // переключаем состояние форм
-    window.form.toggleFormState(window.form.adFormElement);
-
     window.backend.load(loadSuccessHandler, loadErrorHandler);
   }
 
+  function desactivatePage() {
+    window.map.clearMap();
+    window.map.toggleMapState();
+    window.form.setAddress(window.map.getMainPinCoordinates());
+    window.form.resetAdForm();
+    window.form.toggleAllForms();
+    window.map.setPinMouseUpCallback(activatePage);
+  }
+
   function loadSuccessHandler(array) {
+    window.map.toggleMapState();
+    window.form.toggleAllForms();
     var pins = prepareElements(array);
     window.map.fill(pins);
     window.map.setPinMouseUpCallback(null);
-    window.form.toggleFormState(window.form.filtersFormElement);
   }
 
   function loadErrorHandler() {

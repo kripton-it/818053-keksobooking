@@ -17,18 +17,32 @@
 
   mainPinElement.addEventListener('mousedown', mainPinMouseDownHandler);
 
+  function fillMap(element) {
+    pinsContainer.appendChild(element);
+  }
+
   function returnMainPinToStartPosition() {
     mainPinElement.style.left = mainPinStartCoords.left;
     mainPinElement.style.top = mainPinStartCoords.top;
   }
 
-  function fillMap(element) {
-    pinsContainer.appendChild(element);
+  function removePins() {
+    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    for (var i = 0; i < pins.length; i++) {
+      pins[i].remove();
+    }
+  }
+
+  function removeCard() {
+    var activeCard = document.querySelector('.map__card');
+    if (activeCard) {
+      activeCard.remove();
+    }
   }
 
   function clearMap() {
-    window.pin.removePins();
-    window.card.removeCard();
+    removePins();
+    removeCard();
     returnMainPinToStartPosition();
   }
 

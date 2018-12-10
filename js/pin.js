@@ -22,15 +22,7 @@
     }
   }
 
-  function removePins() {
-    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < pins.length; i++) {
-      pins[i].remove();
-    }
-  }
-
   window.pin = {
-    createPin: createPin,
-    removePins: removePins
+    createPin: createPin
   };
 })();
