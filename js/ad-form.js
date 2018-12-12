@@ -69,7 +69,8 @@
     resetFormCallback = callback;
   }
 
-  adFormElement.addEventListener('reset', function () {
+  adFormElement.querySelector('.ad-form__reset').addEventListener('click', function (evt) {
+    evt.preventDefault();
     resetFormCallback();
   });
 
@@ -111,8 +112,8 @@
     capacityElement.setCustomValidity(errorMessage);
   }
 
-  function resetAdForm(/* callback */) {
-    window.form.reset(adFormElement/* , callback */);
+  function resetAdForm() {
+    adFormElement.reset();
   }
 
   function toggleAdFormState() {

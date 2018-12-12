@@ -30,7 +30,7 @@
   }
 
   function resetFiltersForm() {
-    window.form.reset(filtersFormElement);
+    filtersFormElement.reset();
   }
 
   function toggleFiltersFormState() {

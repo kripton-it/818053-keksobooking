@@ -14,16 +14,8 @@
     toggleFormInputState(formElement);
   }
 
-  function resetForm(formElement/* , callback */) {
-    formElement.reset();
-    /* if (callback) {
-      setTimeout(callback, 0);
-    }*/
-  }
-
   window.form = {
     toggleState: toggleFormState,
-    toggleInputState: toggleFormInputState,
-    reset: resetForm
+    toggleInputState: toggleFormInputState
   };
 })();

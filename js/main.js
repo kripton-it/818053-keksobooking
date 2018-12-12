@@ -35,11 +35,11 @@
     window.map.toggleState();
     window.map.clear();
     window.adForm.reset();
+    window.filtersForm.reset();
+    window.adForm.setAddress(window.map.getMainPinCoordinates());
     window.adForm.toggle();
     window.filtersForm.toggle();
     window.map.setPinMouseUpCallback(activatePage);
-    // при деактивации страницы после ресета нужно заполнить поле адреса
-    window.adForm.setAddress(window.map.getMainPinCoordinates());
   }
 
   function updatePins(dataArray) {
