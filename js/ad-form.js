@@ -111,8 +111,8 @@
     capacityElement.setCustomValidity(errorMessage);
   }
 
-  function resetAdForm() {
-    window.form.reset(adFormElement);
+  function resetAdForm(/* callback */) {
+    window.form.reset(adFormElement/* , callback */);
   }
 
   function toggleAdFormState() {

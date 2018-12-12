@@ -17,41 +17,38 @@
     var guests = filtersFormElement.querySelector('#housing-guests').value;
     var features = filtersFormElement.querySelectorAll('.map__checkbox');
 
-    if (pin.offer.type === type || type === 'any') {
+    if (pin.offer.type === type) {
       rank++;
     }
 
     switch (price) {
-      case 'any':
-        rank++;
-        break;
       case 'low':
         if (pin.offer.price < priceLimits.low) {
-          rank++;
+          rank += 2;
         }
         break;
       case 'middle':
         if (pin.offer.price >= priceLimits.low && pin.offer.price <= priceLimits.high) {
-          rank++;
+          rank += 2;
         }
         break;
       case 'high':
         if (pin.offer.price > priceLimits.high) {
-          rank++;
+          rank += 2;
         }
         break;
     }
 
-    if (pin.offer.rooms === +rooms || rooms === 'any') {
+    if (pin.offer.rooms === +rooms) {
       rank++;
     }
 
-    if (pin.offer.guests === +guests || guests === 'any') {
+    if (pin.offer.guests === +guests) {
       rank++;
     }
 
     for (var i = 0; i < features.length; i++) {
-      if (features[i].checked === (pin.offer.features.indexOf(features[i].value) > -1)) {
+      if (features[i].checked && (pin.offer.features.indexOf(features[i].value) > -1)) {
         rank++;
       }
     }
@@ -60,7 +57,8 @@
   }
 
   window.filter = function (array) {
-    return array.sort(function (left, right) {
+    // console.log(array.length);
+    var filteredArray = array.sort(function (left, right) {
       var rankDiff = getRank(right) - getRank(left);
       // Если ранги равны - сортировка по адресу аватара ("img/avatars/user03.png")
       if (rankDiff === 0) {
@@ -68,7 +66,13 @@
       }
       return rankDiff;
     }).filter(function (item) {
-      return getRank(item) >= 5;
+      return getRank(item) > 0;
     });
+    var filteredArrayLength = filteredArray.length > 5 ? 5 : filteredArray.length;
+    /* filteredArray.forEach(function (item) {
+      console.log(item);
+      console.log(getRank(item));
+    });*/
+    return filteredArray.slice(0, filteredArrayLength);
   };
 })();

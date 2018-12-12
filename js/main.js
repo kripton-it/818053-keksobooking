@@ -3,7 +3,7 @@
 (function () {
 
   var activeCard = null;
-  var pins = [];
+  var adInfoObjects = [];
 
   // записываем адрес в поле формы
   window.adForm.setAddress(window.map.getMainPinCoordinates());
@@ -14,7 +14,9 @@
     window.adForm.setAddress(window.map.getMainPinCoordinates());
   });
   window.filtersForm.setfilterChangeHandler(function () {
-    window.utils.debounce(updatePins);
+    window.utils.debounce(function () {
+      updatePins(adInfoObjects);
+    });
   });
   // задаём колбэк для успешной отправки формы - деактивировать страницу
   window.adForm.setSuccessHandlerCallback(function () {
@@ -36,26 +38,24 @@
     window.adForm.toggle();
     window.filtersForm.toggle();
     window.map.setPinMouseUpCallback(activatePage);
-    setTimeout(function () {
-      window.adForm.setAddress(window.map.getMainPinCoordinates());
-    }, 0);
+    // при деактивации страницы после ресета нужно заполнить поле адреса
+    window.adForm.setAddress(window.map.getMainPinCoordinates());
   }
 
-  function updatePins() {
-    var filteredPins = window.filter(pins);
+  function updatePins(dataArray) {
+    var filteredPins = window.filter(dataArray);
     var pinsFragment = prepareElements(filteredPins);
     window.map.clear();
     window.map.fill(pinsFragment);
   }
 
-  function loadSuccessHandler(array) {
-    pins = array;
+  function loadSuccessHandler(dataArray) {
+    adInfoObjects = dataArray;
     window.map.toggleState();
     window.adForm.toggle();
     window.filtersForm.toggle();
     window.filtersForm.listen();
-    // устранение дребезга
-    window.utils.debounce(updatePins);
+    updatePins(dataArray);
     window.map.setPinMouseUpCallback(null);
   }
 
@@ -73,10 +73,8 @@
   }
 
   function prepareElements(dataArray) {
-    var dataArrayLength = dataArray.length > 5 ? 5 : dataArray.length;
-    var dataArrayCopy = dataArray.slice(0, dataArrayLength);
     var fragment = document.createDocumentFragment();
-    dataArrayCopy.forEach(function (dataObject) {
+    dataArray.forEach(function (dataObject) {
       var newPinElement = window.pin.create(dataObject, function (evt) {
         var target = evt.target.closest('.map__pin');
         if (activeCard) {
