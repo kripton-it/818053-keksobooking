@@ -13,7 +13,9 @@
   window.map.setPinMouseMoveCallback(function () {
     window.adForm.setAddress(window.map.getMainPinCoordinates());
   });
-  window.filtersForm.setfilterChangeHandler(updatePins);
+  window.filtersForm.setfilterChangeHandler(function () {
+    window.utils.debounce(updatePins);
+  });
   // задаём колбэк для успешной отправки формы - деактивировать страницу
   window.adForm.setSuccessHandlerCallback(function () {
     desactivatePage();
@@ -52,7 +54,8 @@
     window.adForm.toggle();
     window.filtersForm.toggle();
     window.filtersForm.listen();
-    updatePins();
+    // устранение дребезга
+    window.utils.debounce(updatePins);
     window.map.setPinMouseUpCallback(null);
   }
 

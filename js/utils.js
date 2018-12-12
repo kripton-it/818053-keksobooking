@@ -6,18 +6,17 @@
   var X_MAX = 1200;
   var Y_MIN = 130;
   var Y_MAX = 630;
-  var DEBOUNCE_INTERVAL = 300;
+  var DEBOUNCE_INTERVAL = 500;
 
   var lastTimeout;
 
   // неполная реализация, полная - на слайде https://up.htmlacademy.ru/javascript/16/demos/1657#25
-  function debounce(cb) {
+  function debounce(callback) {
     if (lastTimeout) {
       window.clearTimeout(lastTimeout);
     }
-    lastTimeout = window.setTimeout(cb, DEBOUNCE_INTERVAL);
+    lastTimeout = window.setTimeout(callback, DEBOUNCE_INTERVAL);
   }
-
 
   window.utils = {
     ESC_KEYCODE: ESC_KEYCODE,

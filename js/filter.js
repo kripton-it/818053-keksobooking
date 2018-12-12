@@ -59,12 +59,14 @@
     return rank;
   }
 
-
-
-
   window.filter = function (array) {
     return array.sort(function (left, right) {
-      return getRank(right) - getRank(left);
+      var rankDiff = getRank(right) - getRank(left);
+      // Если ранги равны - сортировка по адресу аватара ("img/avatars/user03.png")
+      if (rankDiff === 0) {
+        rankDiff = right.author.avatar - left.author.avatar;
+      }
+      return rankDiff;
     }).filter(function (item) {
       return getRank(item) >= 5;
     });
