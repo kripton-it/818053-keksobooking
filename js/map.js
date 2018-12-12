@@ -43,7 +43,9 @@
   function clearMap() {
     removePins();
     removeCard();
-    returnMainPinToStartPosition();
+    if (mapElement.classList.contains('map--faded')) {
+      returnMainPinToStartPosition();
+    }
   }
 
   function getMainPinCoordinates() {

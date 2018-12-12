@@ -3,21 +3,23 @@
 (function () {
 
   var activeCard = null;
+  var pins = [];
 
   // записываем адрес в поле формы
-  window.form.setAddress(window.map.getMainPinCoordinates());
+  window.adForm.setAddress(window.map.getMainPinCoordinates());
   // задаём колбэк для mouseUp после первого перетаскивания пина - активировать страницу
   window.map.setPinMouseUpCallback(activatePage);
   // задаём колбэк для mouseMove пина - переписать адрес в поле формы
   window.map.setPinMouseMoveCallback(function () {
-    window.form.setAddress(window.map.getMainPinCoordinates());
+    window.adForm.setAddress(window.map.getMainPinCoordinates());
   });
+  window.filtersForm.setfilterChangeHandler(updatePins);
   // задаём колбэк для успешной отправки формы - деактивировать страницу
-  window.form.setSuccessHandlerCallback(function () {
+  window.adForm.setSuccessHandlerCallback(function () {
     desactivatePage();
   });
   // задаём колбэк для сброса формы - деактивировать страницу
-  window.form.setResetFormCallback(function () {
+  window.adForm.setResetFormCallback(function () {
     desactivatePage();
   });
 
@@ -26,19 +28,31 @@
   }
 
   function desactivatePage() {
-    window.map.clear();
     window.map.toggleState();
-    window.form.setAddress(window.map.getMainPinCoordinates());
-    window.form.reset();
-    window.form.toggleAll();
+    window.map.clear();
+    window.adForm.reset();
+    window.adForm.toggle();
+    window.filtersForm.toggle();
     window.map.setPinMouseUpCallback(activatePage);
+    setTimeout(function () {
+      window.adForm.setAddress(window.map.getMainPinCoordinates());
+    }, 0);
+  }
+
+  function updatePins() {
+    var filteredPins = window.filter(pins);
+    var pinsFragment = prepareElements(filteredPins);
+    window.map.clear();
+    window.map.fill(pinsFragment);
   }
 
   function loadSuccessHandler(array) {
+    pins = array;
     window.map.toggleState();
-    window.form.toggleAll();
-    var pins = prepareElements(array);
-    window.map.fill(pins);
+    window.adForm.toggle();
+    window.filtersForm.toggle();
+    window.filtersForm.listen();
+    updatePins();
     window.map.setPinMouseUpCallback(null);
   }
 
@@ -56,11 +70,16 @@
   }
 
   function prepareElements(dataArray) {
+    var dataArrayLength = dataArray.length > 5 ? 5 : dataArray.length;
+    var dataArrayCopy = dataArray.slice(0, dataArrayLength);
     var fragment = document.createDocumentFragment();
-    dataArray.forEach(function (dataObject) {
+    dataArrayCopy.forEach(function (dataObject) {
       var newPinElement = window.pin.create(dataObject, function (evt) {
         var target = evt.target.closest('.map__pin');
-        window.card.remove(activeCard, removeCardCallback);
+        if (activeCard) {
+          activeCard.remove();
+          removeCardCallback();
+        }
         target.classList.add('map__pin--active');
         activeCard = window.card.create(dataObject, removeCardCallback);
         document.addEventListener('keyup', documentEscPressHandler);
