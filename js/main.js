@@ -43,7 +43,7 @@
   }
 
   function updatePins(dataArray) {
-    var filteredPins = window.filter(dataArray);
+    var filteredPins = window.filtersForm.filter(dataArray);
     var pinsFragment = prepareElements(filteredPins);
     window.map.clear();
     window.map.fill(pinsFragment);
