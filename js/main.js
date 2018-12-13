@@ -3,42 +3,67 @@
 (function () {
 
   var activeCard = null;
+  var adInfoObjects = [];
 
   // записываем адрес в поле формы
-  window.form.setAddress(window.map.getMainPinCoordinates());
+  window.adForm.setAddress(window.map.getMainPinCoordinates());
   // задаём колбэк для mouseUp после первого перетаскивания пина - активировать страницу
   window.map.setPinMouseUpCallback(activatePage);
   // задаём колбэк для mouseMove пина - переписать адрес в поле формы
   window.map.setPinMouseMoveCallback(function () {
-    window.form.setAddress(window.map.getMainPinCoordinates());
+    window.adForm.setAddress(window.map.getMainPinCoordinates());
   });
-  // задаём колбэк для успешной отправки формы - деактивировать страницу
-  window.form.setSuccessHandlerCallback(function () {
-    desactivatePage();
-  });
+  // передаём обработчик отправки формы
+  window.adForm.setSubmitHandler(adFormSubmitHandler);
   // задаём колбэк для сброса формы - деактивировать страницу
-  window.form.setResetFormCallback(function () {
+  window.adForm.setResetFormCallback(function () {
     desactivatePage();
   });
+
+  // обработчик отправки формы
+  function adFormSubmitHandler(evt) {
+    window.backend.upload(new FormData(evt.currentTarget), function () {
+      desactivatePage();
+      window.message.showSuccessMessage();
+    }, function () {
+      window.message.showErrorMessage();
+    });
+  }
 
   function activatePage() {
     window.backend.load(loadSuccessHandler, loadErrorHandler);
   }
 
   function desactivatePage() {
-    window.map.clear();
     window.map.toggleState();
-    window.form.setAddress(window.map.getMainPinCoordinates());
-    window.form.reset();
-    window.form.toggleAll();
+    window.map.clear();
+    window.adForm.reset();
+    window.filtersForm.reset();
+    window.adForm.setAddress(window.map.getMainPinCoordinates());
+    window.adForm.toggle();
+    window.filtersForm.toggle();
     window.map.setPinMouseUpCallback(activatePage);
   }
 
-  function loadSuccessHandler(array) {
+  function updatePins(dataArray) {
+    var filteredPins = window.filtersForm.filter(dataArray);
+    var pinsFragment = prepareElements(filteredPins);
+    window.map.clear();
+    window.map.fill(pinsFragment);
+  }
+
+  function loadSuccessHandler(dataArray) {
+    adInfoObjects = dataArray;
     window.map.toggleState();
-    window.form.toggleAll();
-    var pins = prepareElements(array);
-    window.map.fill(pins);
+    window.adForm.toggle();
+    window.filtersForm.toggle();
+    // передаём обработчик для изменения фильтров
+    window.filtersForm.setfilterChangeHandler(function () {
+      window.utils.debounce(function () {
+        updatePins(adInfoObjects);
+      });
+    });
+    updatePins(dataArray);
     window.map.setPinMouseUpCallback(null);
   }
 
@@ -60,7 +85,10 @@
     dataArray.forEach(function (dataObject) {
       var newPinElement = window.pin.create(dataObject, function (evt) {
         var target = evt.target.closest('.map__pin');
-        window.card.remove(activeCard, removeCardCallback);
+        if (activeCard) {
+          activeCard.remove();
+          removeCardCallback();
+        }
         target.classList.add('map__pin--active');
         activeCard = window.card.create(dataObject, removeCardCallback);
         document.addEventListener('keyup', documentEscPressHandler);

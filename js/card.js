@@ -70,7 +70,7 @@
     titleElement.textContent = infoCard.offer.title;
     addressElement.textContent = infoCard.offer.address;
     priceElement.innerHTML = infoCard.offer.price + '&#x20bd;<span>/ночь</span>';
-    typeElement.textContent = window.form.types[infoCard.offer.type].translation;
+    typeElement.textContent = window.adForm.types[infoCard.offer.type].translation;
 
     // если информации о комнатах и гостях нет - удалить блок
     if (infoCard.offer.rooms === 0 && infoCard.offer.guests === 0) {

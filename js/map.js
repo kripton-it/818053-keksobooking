@@ -43,7 +43,9 @@
   function clearMap() {
     removePins();
     removeCard();
-    returnMainPinToStartPosition();
+    if (mapElement.classList.contains('map--faded')) {
+      returnMainPinToStartPosition();
+    }
   }
 
   function getMainPinCoordinates() {
@@ -72,18 +74,18 @@
       y: evt.clientY
     };
 
-    if (mainPinElement.offsetTop + shift.y < window.utils.Y_MIN) {
-      mainPinElement.style.top = window.utils.Y_MIN + 'px';
-    } else if (mainPinElement.offsetTop + shift.y > window.utils.Y_MAX) {
-      mainPinElement.style.top = window.utils.Y_MAX + 'px';
+    if (getMainPinCoordinates().y < window.utils.Y_MIN) {
+      mainPinElement.style.top = (window.utils.Y_MIN - mainPinElement.offsetHeight - MAIN_PIN_HEIGHT) + 'px';
+    } else if (getMainPinCoordinates().y > window.utils.Y_MAX) {
+      mainPinElement.style.top = (window.utils.Y_MAX - mainPinElement.offsetHeight - MAIN_PIN_HEIGHT) + 'px';
     } else {
       mainPinElement.style.top = (mainPinElement.offsetTop + shift.y) + 'px';
     }
 
-    if (mainPinElement.offsetLeft + shift.x < window.utils.X_MIN) {
-      mainPinElement.style.left = window.utils.X_MIN + 'px';
-    } else if (mainPinElement.offsetLeft + shift.x > window.utils.X_MAX - mainPinElement.offsetWidth) {
-      mainPinElement.style.left = (window.utils.X_MAX - mainPinElement.offsetWidth) + 'px';
+    if (getMainPinCoordinates().x < window.utils.X_MIN) {
+      mainPinElement.style.left = (window.utils.X_MIN - mainPinElement.offsetWidth / 2) + 'px';
+    } else if (getMainPinCoordinates().x > window.utils.X_MAX) {
+      mainPinElement.style.left = (window.utils.X_MAX - mainPinElement.offsetWidth / 2) + 'px';
     } else {
       mainPinElement.style.left = (mainPinElement.offsetLeft + shift.x) + 'px';
     }
