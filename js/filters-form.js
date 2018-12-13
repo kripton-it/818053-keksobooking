@@ -85,7 +85,9 @@
   }
 
   function filterArray(array) {
-    var filteredArray = array.filter(isTypeMatch).filter(isPriceMatch).filter(isRoomsMatch).filter(isGuestsMatch).filter(isFeaturesMatch);
+    var filteredArray = array.filter(function (item) {
+      return isTypeMatch(item) && isPriceMatch(item) && isRoomsMatch(item) && isGuestsMatch(item) && isFeaturesMatch(item);
+    });
 
     if (filteredArray.length > 5) {
       filteredArray.length = 5;
