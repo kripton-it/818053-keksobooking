@@ -29,7 +29,6 @@
   var timeFieldsetElement = adFormElement.querySelector('.ad-form__element--time');
   var roomsNumberElement = adFormElement.querySelector('#room_number');
   var capacityElement = adFormElement.querySelector('#capacity');
-  var successHandlerCallback = null;
   var resetFormCallback = null;
 
   window.form.toggleInputState(adFormElement);
@@ -56,13 +55,11 @@
     checkRoomsAndCapacity();
   });
 
-  adFormElement.addEventListener('submit', function (evt) {
-    window.backend.upload(new FormData(adFormElement), successHandler, errorHandler);
-    evt.preventDefault();
-  });
-
-  function setSuccessHandlerCallback(callback) {
-    successHandlerCallback = callback;
+  function setSubmitHandler(formSubmitHandler) {
+    adFormElement.addEventListener('submit', function (evt) {
+      evt.preventDefault();
+      formSubmitHandler(evt);
+    });
   }
 
   function setResetFormCallback(callback) {
@@ -73,15 +70,6 @@
     evt.preventDefault();
     resetFormCallback();
   });
-
-  function successHandler() {
-    successHandlerCallback();
-    window.message.showSuccessMessage();
-  }
-
-  function errorHandler() {
-    window.message.showErrorMessage();
-  }
 
   function setAddress(coords) {
     addressInputElement.value = coords.x + ', ' + coords.y;
@@ -123,9 +111,9 @@
   window.adForm = {
     types: types,
     setAddress: setAddress,
-    setSuccessHandlerCallback: setSuccessHandlerCallback,
     setResetFormCallback: setResetFormCallback,
     reset: resetAdForm,
-    toggle: toggleAdFormState
+    toggle: toggleAdFormState,
+    setSubmitHandler: setSubmitHandler
   };
 })();

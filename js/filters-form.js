@@ -2,7 +2,6 @@
 
 (function () {
 
-  var filterChangeHandler = null;
   var filtersFormElement = document.querySelector('.map__filters');
   var typeSelectElement = filtersFormElement.querySelector('#housing-type');
   var priceSelectElement = filtersFormElement.querySelector('#housing-price');
@@ -17,16 +16,13 @@
 
   window.form.toggleInputState(filtersFormElement);
 
-  function listenFiltersForm() {
+  function setfilterChangeHandler(callback) {
+    var filterChangeHandler = callback;
     typeSelectElement.addEventListener('change', filterChangeHandler);
     priceSelectElement.addEventListener('change', filterChangeHandler);
     roomsSelectElement.addEventListener('change', filterChangeHandler);
     guestsSelectElement.addEventListener('change', filterChangeHandler);
     featuresFieldsetElement.addEventListener('change', filterChangeHandler);
-  }
-
-  function setfilterChangeHandler(callback) {
-    filterChangeHandler = callback;
   }
 
   function resetFiltersForm() {
@@ -100,7 +96,6 @@
     reset: resetFiltersForm,
     toggle: toggleFiltersFormState,
     setfilterChangeHandler: setfilterChangeHandler,
-    listen: listenFiltersForm,
     filter: filterArray
   };
 })();

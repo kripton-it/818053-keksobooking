@@ -13,19 +13,22 @@
   window.map.setPinMouseMoveCallback(function () {
     window.adForm.setAddress(window.map.getMainPinCoordinates());
   });
-  window.filtersForm.setfilterChangeHandler(function () {
-    window.utils.debounce(function () {
-      updatePins(adInfoObjects);
-    });
-  });
-  // задаём колбэк для успешной отправки формы - деактивировать страницу
-  window.adForm.setSuccessHandlerCallback(function () {
-    desactivatePage();
-  });
+  // передаём обработчик отправки формы
+  window.adForm.setSubmitHandler(adFormSubmitHandler);
   // задаём колбэк для сброса формы - деактивировать страницу
   window.adForm.setResetFormCallback(function () {
     desactivatePage();
   });
+
+  // обработчик отправки формы
+  function adFormSubmitHandler(evt) {
+    window.backend.upload(new FormData(evt.currentTarget), function () {
+      desactivatePage();
+      window.message.showSuccessMessage();
+    }, function () {
+      window.message.showErrorMessage();
+    });
+  }
 
   function activatePage() {
     window.backend.load(loadSuccessHandler, loadErrorHandler);
@@ -54,7 +57,12 @@
     window.map.toggleState();
     window.adForm.toggle();
     window.filtersForm.toggle();
-    window.filtersForm.listen();
+    // передаём обработчик для изменения фильтров
+    window.filtersForm.setfilterChangeHandler(function () {
+      window.utils.debounce(function () {
+        updatePins(adInfoObjects);
+      });
+    });
     updatePins(dataArray);
     window.map.setPinMouseUpCallback(null);
   }
