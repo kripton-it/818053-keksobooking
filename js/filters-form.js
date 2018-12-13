@@ -37,45 +37,55 @@
     window.form.toggleState(filtersFormElement);
   }
 
-  function filterArray(array) {
+  function isTypeMatch(item) {
+    return item.offer.type === typeSelectElement.value || typeSelectElement.value === 'any';
+  }
+
+  function isPriceMatch(item) {
+    var isPriceSuited;
+    switch (priceSelectElement.value) {
+      case 'any':
+        isPriceSuited = true;
+        break;
+      case 'low':
+        isPriceSuited = item.offer.price < priceLimits.low;
+        break;
+      case 'middle':
+        isPriceSuited = item.offer.price >= priceLimits.low && item.offer.price <= priceLimits.high;
+        break;
+      case 'high':
+        isPriceSuited = item.offer.price > priceLimits.high;
+        break;
+    }
+    return isPriceSuited;
+  }
+
+  function isRoomsMatch(item) {
+    return item.offer.rooms === +roomsSelectElement.value || roomsSelectElement.value === 'any';
+  }
+
+  function isGuestsMatch(item) {
+    return item.offer.guests === +guestsSelectElement.value || guestsSelectElement.value === 'any';
+  }
+
+  function isFeaturesMatch(item) {
     var checkedFeaturesCollection = featuresFieldsetElement.querySelectorAll('.map__checkbox:checked');
-    var filteredArray = array.filter(function (item) {
-      return item.offer.type === typeSelectElement.value || typeSelectElement.value === 'any';
-    }).filter(function (item) {
-      var isPriceSuited;
-      switch (priceSelectElement.value) {
-        case 'any':
-          isPriceSuited = true;
-          break;
-        case 'low':
-          isPriceSuited = item.offer.price < priceLimits.low;
-          break;
-        case 'middle':
-          isPriceSuited = item.offer.price >= priceLimits.low && item.offer.price <= priceLimits.high;
-          break;
-        case 'high':
-          isPriceSuited = item.offer.price > priceLimits.high;
-          break;
-      }
-      return isPriceSuited;
-    }).filter(function (item) {
-      return item.offer.rooms === +roomsSelectElement.value || roomsSelectElement.value === 'any';
-    }).filter(function (item) {
-      return item.offer.guests === +guestsSelectElement.value || guestsSelectElement.value === 'any';
-    }).filter(function (item) {
-      var store = {};
-      var checkedFeatures = [];
-      for (var i = 0; i < item.offer.features.length; i++) {
-        var key = item.offer.features[i];
-        store[key] = true;
-      }
-      for (i = 0; i < checkedFeaturesCollection.length; i++) {
-        checkedFeatures.push(checkedFeaturesCollection[i]);
-      }
-      return checkedFeatures.every(function (feature) {
-        return store[feature.value];
-      });
+    var store = {};
+    var checkedFeatures = [];
+    for (var i = 0; i < item.offer.features.length; i++) {
+      var key = item.offer.features[i];
+      store[key] = true;
+    }
+    for (i = 0; i < checkedFeaturesCollection.length; i++) {
+      checkedFeatures.push(checkedFeaturesCollection[i]);
+    }
+    return checkedFeatures.every(function (feature) {
+      return store[feature.value];
     });
+  }
+
+  function filterArray(array) {
+    var filteredArray = array.filter(isTypeMatch).filter(isPriceMatch).filter(isRoomsMatch).filter(isGuestsMatch).filter(isFeaturesMatch);
 
     if (filteredArray.length > 5) {
       filteredArray.length = 5;
