@@ -30,10 +30,16 @@
   var roomsNumberElement = adFormElement.querySelector('#room_number');
   var capacityElement = adFormElement.querySelector('#capacity');
   var resetFormCallback = null;
+  var avatarInputElement = adFormElement.querySelector('.ad-form__field input[type=file]');
+  var adPhotosInputElement = adFormElement.querySelector('.ad-form__upload input[type=file]');
+  var avatarPreviewElement = adFormElement.querySelector('.ad-form-header__preview img');
+  var adPhotosPreviewElement = adFormElement.querySelector('.ad-form__photo');
 
   window.form.toggleInputState(adFormElement);
   setPriceParameters();
   checkRoomsAndCapacity();
+  window.preview(avatarInputElement, avatarPreviewElement);
+  window.preview(adPhotosInputElement, adPhotosPreviewElement);
 
   typeElement.addEventListener('change', typeSelectChangeHandler);
 
