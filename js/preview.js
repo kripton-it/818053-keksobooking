@@ -24,12 +24,11 @@
 
   function showMultipleFilesPreview(files, previewElement) {
     var previewContainer = previewElement.parentNode;
-    var previewTemplate = previewElement;
     var fragment = document.createDocumentFragment();
-    previewElement.remove();
     for (var i = 0; i < files.length; i++) {
       var imageElement = document.createElement('img');
-      var currentPreviewElement = previewTemplate.cloneNode(true);
+      var currentPreviewElement = previewElement.cloneNode();
+      currentPreviewElement.hidden = false;
       var file = files[i];
       imageElement.classList.add('ad-form__photo');
       showFilePreview(file, imageElement);
@@ -37,6 +36,7 @@
       fragment.appendChild(currentPreviewElement);
     }
     previewContainer.appendChild(fragment);
+    previewElement.hidden = true;
   }
 
   function preview(fileChooser, previewElement) {
