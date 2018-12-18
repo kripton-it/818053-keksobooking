@@ -37,6 +37,7 @@
     }
     previewContainer.appendChild(fragment);
     previewElement.hidden = true;
+    window.dragAndDropSort(previewContainer);
   }
 
   function preview(fileChooser, previewElement) {
