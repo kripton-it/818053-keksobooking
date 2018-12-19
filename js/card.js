@@ -18,36 +18,36 @@
     return cardCapacityRooms;
   }
 
-  function createFeature(featureName) {
+  function createFeature(feature) {
     var cardFeatureElement = document.createElement('li');
     cardFeatureElement.classList.add('popup__feature');
-    var cardFeaturesItemClass = 'popup__feature--' + featureName;
+    var cardFeaturesItemClass = 'popup__feature--' + feature;
     cardFeatureElement.classList.add(cardFeaturesItemClass);
     return cardFeatureElement;
   }
 
-  function createFeaturesList(featuresArray) {
+  function createFeatures(features) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < featuresArray.length; i++) {
-      fragment.appendChild(createFeature(featuresArray[i]));
+    for (var i = 0; i < features.length; i++) {
+      fragment.appendChild(createFeature(features[i]));
     }
     return fragment;
   }
 
-  function createPhoto(photoSrc) {
+  function createPhoto(photoSource) {
     var cardPhotoElement = document.createElement('img');
     cardPhotoElement.classList.add('popup__photo');
     cardPhotoElement.width = CARD_PHOTO_WIDTH.toString();
     cardPhotoElement.height = CARD_PHOTO_HEIGTH.toString();
     cardPhotoElement.alt = 'Фотография жилья';
-    cardPhotoElement.src = photoSrc;
+    cardPhotoElement.src = photoSource;
     return cardPhotoElement;
   }
 
-  function createPhotosList(photosSrcArray) {
+  function createPhotos(photoSources) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < photosSrcArray.length; i++) {
-      fragment.appendChild(createPhoto(photosSrcArray[i]));
+    for (var i = 0; i < photoSources.length; i++) {
+      fragment.appendChild(createPhoto(photoSources[i]));
     }
     return fragment;
   }
@@ -91,7 +91,7 @@
       featuresListElement.remove();
     } else {
       featuresListElement.innerHTML = '';
-      featuresListElement.appendChild(createFeaturesList(infoCard.offer.features));
+      featuresListElement.appendChild(createFeatures(infoCard.offer.features));
     }
 
     // если описания нет - удалить блок
@@ -106,17 +106,15 @@
       photosListElement.remove();
     } else {
       photosListElement.innerHTML = '';
-      photosListElement.appendChild(createPhotosList(infoCard.offer.photos));
+      photosListElement.appendChild(createPhotos(infoCard.offer.photos));
     }
 
     popupCloseElement.addEventListener('click', function () {
-      if (cardElement) {
-        if (callback) {
-          callback();
-        }
-
-        cardElement.remove();
+      if (callback) {
+        callback();
       }
+
+      cardElement.remove();
     });
 
     return cardElement;

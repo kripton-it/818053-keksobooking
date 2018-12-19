@@ -62,7 +62,7 @@
   }
 
   window.message = {
-    showErrorMessage: showErrorMessage,
-    showSuccessMessage: showSuccessMessage
+    showError: showErrorMessage,
+    showSuccess: showSuccessMessage
   };
 })();
