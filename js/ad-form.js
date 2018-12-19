@@ -2,7 +2,7 @@
 
 (function () {
 
-  var syncTimeSelects = ['timein', 'timeout'];
+  var SYNC_TIME_SELECTS = ['timein', 'timeout'];
   var types = {
     palace: {
       translation: 'Дворец',
@@ -47,7 +47,7 @@
     var target = evt.target;
     var selects = timeFieldsetElement.querySelectorAll('select');
     for (var i = 0; i < selects.length; i++) {
-      if (syncTimeSelects.indexOf(selects[i].id) !== -1) {
+      if (SYNC_TIME_SELECTS.indexOf(selects[i].id) !== -1) {
         selects[i].value = target.value;
       }
     }
@@ -61,6 +61,11 @@
     checkRoomsAndCapacity();
   });
 
+  adFormElement.querySelector('.ad-form__reset').addEventListener('click', function (evt) {
+    evt.preventDefault();
+    resetFormCallback();
+  });
+
   function setSubmitHandler(formSubmitHandler) {
     adFormElement.addEventListener('submit', function (evt) {
       evt.preventDefault();
@@ -71,11 +76,6 @@
   function setResetFormCallback(callback) {
     resetFormCallback = callback;
   }
-
-  adFormElement.querySelector('.ad-form__reset').addEventListener('click', function (evt) {
-    evt.preventDefault();
-    resetFormCallback();
-  });
 
   function setAddress(coords) {
     addressInputElement.value = coords.x + ', ' + coords.y;
@@ -117,7 +117,7 @@
   window.adForm = {
     types: types,
     setAddress: setAddress,
-    setResetFormCallback: setResetFormCallback,
+    setResetCallback: setResetFormCallback,
     reset: resetAdForm,
     toggle: toggleAdFormState,
     setSubmitHandler: setSubmitHandler

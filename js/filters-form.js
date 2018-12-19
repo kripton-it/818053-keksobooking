@@ -9,14 +9,14 @@
   var guestsSelectElement = filtersFormElement.querySelector('#housing-guests');
   var featuresFieldsetElement = filtersFormElement.querySelector('#housing-features');
 
-  var priceLimits = {
+  var PriceLimit = {
     low: 10000,
     high: 50000
   };
 
   window.form.toggleInputState(filtersFormElement);
 
-  function setfilterChangeHandler(callback) {
+  function setFilterChangeHandler(callback) {
     var filterChangeHandler = callback;
     typeSelectElement.addEventListener('change', filterChangeHandler);
     priceSelectElement.addEventListener('change', filterChangeHandler);
@@ -44,13 +44,13 @@
         isPriceSuited = true;
         break;
       case 'low':
-        isPriceSuited = item.offer.price < priceLimits.low;
+        isPriceSuited = item.offer.price < PriceLimit.low;
         break;
       case 'middle':
-        isPriceSuited = item.offer.price >= priceLimits.low && item.offer.price <= priceLimits.high;
+        isPriceSuited = item.offer.price >= PriceLimit.low && item.offer.price <= PriceLimit.high;
         break;
       case 'high':
-        isPriceSuited = item.offer.price > priceLimits.high;
+        isPriceSuited = item.offer.price > PriceLimit.high;
         break;
     }
     return isPriceSuited;
@@ -80,22 +80,22 @@
     });
   }
 
-  function filterArray(array) {
-    var filteredArray = array.filter(function (item) {
+  function filterAds(ads) {
+    var filteredAds = ads.filter(function (item) {
       return isTypeMatch(item) && isPriceMatch(item) && isRoomsMatch(item) && isGuestsMatch(item) && isFeaturesMatch(item);
     });
 
-    if (filteredArray.length > 5) {
-      filteredArray.length = 5;
+    if (filteredAds.length > 5) {
+      filteredAds.length = 5;
     }
 
-    return filteredArray;
+    return filteredAds;
   }
 
   window.filtersForm = {
     reset: resetFiltersForm,
     toggle: toggleFiltersFormState,
-    setfilterChangeHandler: setfilterChangeHandler,
-    filter: filterArray
+    setFilterChangeHandler: setFilterChangeHandler,
+    filter: filterAds
   };
 })();

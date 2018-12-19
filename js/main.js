@@ -2,8 +2,8 @@
 
 (function () {
 
-  var activeCard = null;
-  var adInfoObjects = [];
+  var activeCardElement = null;
+  var activePinElement = null;
 
   // записываем адрес в поле формы
   window.adForm.setAddress(window.map.getMainPinCoordinates());
@@ -16,17 +16,17 @@
   // передаём обработчик отправки формы
   window.adForm.setSubmitHandler(adFormSubmitHandler);
   // задаём колбэк для сброса формы - деактивировать страницу
-  window.adForm.setResetFormCallback(function () {
-    desactivatePage();
+  window.adForm.setResetCallback(function () {
+    deactivatePage();
   });
 
   // обработчик отправки формы
   function adFormSubmitHandler(evt) {
     window.backend.upload(new FormData(evt.currentTarget), function () {
-      desactivatePage();
-      window.message.showSuccessMessage();
+      deactivatePage();
+      window.message.showSuccess();
     }, function () {
-      window.message.showErrorMessage();
+      window.message.showError();
     });
   }
 
@@ -34,7 +34,7 @@
     window.backend.load(loadSuccessHandler, loadErrorHandler);
   }
 
-  function desactivatePage() {
+  function deactivatePage() {
     window.map.toggleState();
     window.map.clear();
     window.adForm.reset();
@@ -45,54 +45,52 @@
     window.map.setPinMouseUpCallback(activatePage);
   }
 
-  function updatePins(dataArray) {
-    var filteredPins = window.filtersForm.filter(dataArray);
-    var pinsFragment = prepareElements(filteredPins);
+  function updatePins(ads) {
+    var filteredAds = window.filtersForm.filter(ads);
+    var pinsFragment = prepareElements(filteredAds);
     window.map.clear();
     window.map.fill(pinsFragment);
   }
 
-  function loadSuccessHandler(dataArray) {
-    adInfoObjects = dataArray;
+  function loadSuccessHandler(ads) {
     window.map.toggleState();
     window.adForm.toggle();
     window.filtersForm.toggle();
     // передаём обработчик для изменения фильтров
-    window.filtersForm.setfilterChangeHandler(function () {
+    window.filtersForm.setFilterChangeHandler(function () {
       window.utils.debounce(function () {
-        updatePins(adInfoObjects);
+        updatePins(ads);
       });
     });
-    updatePins(dataArray);
+    updatePins(ads);
     window.map.setPinMouseUpCallback(null);
   }
 
   function loadErrorHandler() {
-    window.message.showErrorMessage();
+    window.message.showError();
   }
 
   function removeCardCallback() {
-    var activePin = document.querySelector('.map__pin--active');
-    if (activePin) {
-      activePin.classList.remove('map__pin--active');
+    if (activePinElement) {
+      activePinElement.classList.remove('map__pin--active');
     }
 
     document.removeEventListener('keyup', documentEscPressHandler);
   }
 
-  function prepareElements(dataArray) {
+  function prepareElements(ads) {
     var fragment = document.createDocumentFragment();
-    dataArray.forEach(function (dataObject) {
-      var newPinElement = window.pin.create(dataObject, function (evt) {
-        var target = evt.target.closest('.map__pin');
-        if (activeCard) {
-          activeCard.remove();
+    ads.forEach(function (ad) {
+      var newPinElement = window.pin.create(ad, function (evt) {
+        if (activeCardElement) {
+          activeCardElement.remove();
           removeCardCallback();
         }
-        target.classList.add('map__pin--active');
-        activeCard = window.card.create(dataObject, removeCardCallback);
+        activePinElement = evt.target.closest('.map__pin');
+        activePinElement.classList.add('map__pin--active');
+        activeCardElement = window.card.create(ad, removeCardCallback);
         document.addEventListener('keyup', documentEscPressHandler);
-        window.map.fill(activeCard);
+        window.map.fill(activeCardElement);
       });
       if (newPinElement) {
         fragment.appendChild(newPinElement);
@@ -104,7 +102,7 @@
   // закрытие открытой карточки по Esc
   function documentEscPressHandler(evt) {
     if (evt.keyCode === window.utils.ESC_KEYCODE) {
-      activeCard.remove();
+      activeCardElement.remove();
       removeCardCallback();
     }
   }
