@@ -25,16 +25,17 @@
   function showMultipleFilesPreview(files, previewElement) {
     var previewContainer = previewElement.parentNode;
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < files.length; i++) {
+
+    Array.from(files).forEach(function (file) {
       var imageElement = document.createElement('img');
       var currentPreviewElement = previewElement.cloneNode();
       currentPreviewElement.hidden = false;
-      var file = files[i];
       imageElement.classList.add('ad-form__photo');
       showFilePreview(file, imageElement);
       currentPreviewElement.appendChild(imageElement);
       fragment.appendChild(currentPreviewElement);
-    }
+    });
+
     previewContainer.appendChild(fragment);
     previewElement.hidden = true;
   }

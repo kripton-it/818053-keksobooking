@@ -3,9 +3,9 @@
 (function () {
 
   function toggleFormInputState(formElement) {
-    for (var i = 0; i < formElement.children.length; i++) {
-      formElement.children[i].disabled = !formElement.children[i].disabled;
-    }
+    Array.from(formElement.children).forEach(function (child) {
+      child.disabled = !child.disabled;
+    });
   }
 
   function toggleFormState(formElement) {

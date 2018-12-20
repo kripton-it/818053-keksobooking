@@ -28,9 +28,10 @@
 
   function removePins() {
     var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < pins.length; i++) {
-      pins[i].remove();
-    }
+
+    Array.from(pins).forEach(function (pinElement) {
+      pinElement.remove();
+    });
   }
 
   function removeCard() {

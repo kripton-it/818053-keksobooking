@@ -46,11 +46,12 @@
   timeFieldsetElement.addEventListener('change', function (evt) {
     var target = evt.target;
     var selects = timeFieldsetElement.querySelectorAll('select');
-    for (var i = 0; i < selects.length; i++) {
-      if (SYNC_TIME_SELECTS.indexOf(selects[i].id) !== -1) {
-        selects[i].value = target.value;
+
+    selects.forEach(function (select) {
+      if (SYNC_TIME_SELECTS.indexOf(select.id) !== -1) {
+        select.value = target.value;
       }
-    }
+    });
   });
 
   roomsNumberElement.addEventListener('change', function () {
