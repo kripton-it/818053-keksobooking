@@ -7,12 +7,12 @@
 
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
-  function getCardCapacityRooms(rooms) {
+  function getCardCapacityRooms(roomsNumber) {
     var cardCapacityRooms = ' комнаты для ';
-    if (rooms === 1) {
+    if (roomsNumber === 1) {
       cardCapacityRooms = ' комната для ';
     }
-    if (rooms >= 5) {
+    if (roomsNumber >= 5) {
       cardCapacityRooms = ' комнат для ';
     }
     return cardCapacityRooms;

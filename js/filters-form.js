@@ -2,6 +2,7 @@
 
 (function () {
 
+  var SIMILAR_ADS_MAX_NUMBER = 5;
   var filtersFormElement = document.querySelector('.map__filters');
   var typeSelectElement = filtersFormElement.querySelector('#housing-type');
   var priceSelectElement = filtersFormElement.querySelector('#housing-price');
@@ -85,8 +86,8 @@
       return isTypeMatch(item) && isPriceMatch(item) && isRoomsMatch(item) && isGuestsMatch(item) && isFeaturesMatch(item);
     });
 
-    if (filteredAds.length > 5) {
-      filteredAds.length = 5;
+    if (filteredAds.length > SIMILAR_ADS_MAX_NUMBER) {
+      filteredAds.length = SIMILAR_ADS_MAX_NUMBER;
     }
 
     return filteredAds;
