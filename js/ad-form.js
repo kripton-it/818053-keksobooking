@@ -93,14 +93,31 @@
   }
 
   function checkRoomsAndCapacity() {
-    var roomsOptionValueLastDigit = +roomsNumberElement.value % 100;
+    var roomsOptionValue = roomsNumberElement.value;
     var capacityOptionValue = +capacityElement.value;
     var errorMessage = '';
 
-    if (roomsOptionValueLastDigit < 2 && roomsOptionValueLastDigit !== capacityOptionValue) {
-      errorMessage = 'Введите допустимое количество гостей';
-    } else if (roomsOptionValueLastDigit >= 2 && (roomsOptionValueLastDigit < capacityOptionValue || capacityOptionValue === 0)) {
-      errorMessage = 'Введите допустимое количество гостей';
+    switch (roomsOptionValue) {
+      case '1':
+        if (capacityOptionValue !== 1) {
+          errorMessage = 'Разрешённое количество гостей: 1';
+        }
+        break;
+      case '2':
+        if (capacityOptionValue !== 1 && capacityOptionValue !== 2) {
+          errorMessage = 'Разрешённое количество гостей: 1 или 2';
+        }
+        break;
+      case '3':
+        if (capacityOptionValue !== 1 && capacityOptionValue !== 2 && capacityOptionValue !== 3) {
+          errorMessage = 'Разрешённое количество гостей: 1, 2 или 3';
+        }
+        break;
+      case '100':
+        if (capacityOptionValue !== 0) {
+          errorMessage = 'Приглашение гостей запрещено';
+        }
+        break;
     }
 
     capacityElement.setCustomValidity(errorMessage);
