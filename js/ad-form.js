@@ -78,7 +78,19 @@
   }
 
   function setAddress(coords) {
-    addressInputElement.value = coords.x + ', ' + coords.y;
+    if (coords.x < window.utils.X_MIN) {
+      coords.x = window.utils.X_MIN;
+    } else if (coords.x > window.utils.X_MAX) {
+      coords.x = window.utils.X_MAX;
+    }
+
+    if (coords.y < window.utils.Y_MIN) {
+      coords.y = window.utils.Y_MIN;
+    } else if (coords.y > window.utils.Y_MAX) {
+      coords.y = window.utils.Y_MAX;
+    }
+
+    addressInputElement.value = Math.round(coords.x) + ', ' + Math.round(coords.y);
   }
 
   function typeSelectChangeHandler() {
